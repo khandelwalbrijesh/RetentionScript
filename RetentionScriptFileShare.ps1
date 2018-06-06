@@ -65,9 +65,6 @@ Function Get-LogonUserToken
     return $tokenHandle
 }
 
-
-
-
 $dateTimeBeforeObject = [DateTime]::ParseExact($dateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
 $filePathList = New-Object System.Collections.ArrayList
 $Global:ImpersonatedUser = @{} 

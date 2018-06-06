@@ -14,7 +14,7 @@ param (
     [Parameter(Mandatory=$false)]
     [String] $StorageAccountKey,
     
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory=$true)]
     [String] $dateTimeBefore
 )
 
