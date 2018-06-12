@@ -27,7 +27,7 @@ Add-Type -Namespace Import -Name Win32 -MemberDefinition @'
     [DllImport("kernel32.dll", SetLastError = true)] 
     public static extern bool CloseHandle(IntPtr handle); 
 '@ 
-
+. .\UtilScript.ps1
 
 Function Get-LogonUserToken 
 {
@@ -69,7 +69,6 @@ Function Get-LogonUserToken
     return $tokenHandle
 }
 
-$dateTimeBeforeObject = [DateTime]::ParseExact($dateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
 $filePathList = New-Object System.Collections.ArrayList
 $Global:ImpersonatedUser = @{} 
 
@@ -88,8 +87,6 @@ if($userName -ne $null -and $userName -ne "")
         $domain = "."
     }
     
-    
-    
     $userToken = Get-LogonUserToken  -Username $userNameToTry -Domain $domain -Pass $password
     $Global:ImpersonatedUser.ImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($userToken) 
          
@@ -104,95 +101,12 @@ Write-Host "Enumerating the Share : $fileSharePath"
 Get-ChildItem -Path $fileSharePath -Include *.bkmetadata -Recurse | ForEach-Object {$filePathList.Add($_.FullName)} 
 Get-ChildItem -Path $fileSharePath -Include *.zip -Recurse | ForEach-Object {$filePathList.Add($_.FullName)} 
 
-
-$partitionDict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
-$finalDateTimeObject = $dateTimeBeforeObject.ToUniversalTime()
-# i dont think that I would want to delete it.
-$sortedPathsList = $filePathList | Sort-Object -Property @{Expression = {[DateTime]::ParseExact([System.IO.Path]::GetFileNameWithoutExtension($_) + "Z","yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $True}
-foreach($path in $sortedPathsList)
-{
-    $pathList = $path.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
-    Write-Host $pathList
-    $length = $pathList.Length
-    $partitionID = $null
-    Write-Host "Length of pathList is $length"
-    if($pathList -eq $path)
-    {
-        $pathList = $path.Split("/",[StringSplitOptions]'RemoveEmptyEntries')
-        $length = $pathList.Length
-        Write-Host "Length of pathList is $length"
-        if($pathList.Length -le 0)
-        {
-            throw "$path is not in correct format."
-        }
-        else
-        {
-            Write-Host "Length of pathList is $length"
-            $partitionID = $pathList[$pathList.Length - 2]
-        }
-    }
-    else {
-        $partitionID = $pathList[$pathList.Length - 2]            
-    }
-    Write-Host "Partition Id extracted is this $partitionID"
-
-    if($partitionID -eq $null)
-    {
-        throw "Not able to extract partitionID"
-    }
-    if(!$partitionDict.ContainsKey($partitionID))
-    {
-        $partitionDict.Add($partitionID, $path)        
-    }
-    else {
-        $partitionDict[$partitionID].add($path)
-    }
-}
-
+$partitionDict = Get-PartitionDict -pathsList $filePathList
+    
 foreach($partitionid in $partitionDict.Keys)
 {
-    $dateTimeBeforeString = $dateTimeBeforeObject.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") 
-    $url = "http://$ClusterEndpoint/Partitions/$partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
-    Write-Host $url
-    $backupEnumerations = $null
-    try {
-        $pagedBackupEnumeration = Invoke-RestMethod -Uri $url
-        Write-Host "pagedBackupEnumeration is found."
-        $backupEnumerationsNotSorted = $pagedBackupEnumeration.Items
-        Write-Host "backupEnumerationsSorted is found."
-        foreach($backupEnumeration in $backupEnumerationsNotSorted)
-        {
-            Write-Host "Writing the creation time utc of every file."
-            Write-Host "$backupEnumeration.CreationTimeUtc"
-        }
-        $backupEnumerations = $backupEnumerationsNotSorted | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $false}
-    }
-    catch [System.Net.WebException] {
-        $err = $_.ToString() | ConvertFrom-Json
-        if($err.Error.Code == "FABRIC_E_PARTITION_NOT_FOUND")
-        {
-            Write-Host "$partitionid is not found. If you want to delete the data in this partition. Skipping this partition."
-            Write-Host "If you want to remove this partition as well, please run the script by enabling force flag."
-            continue
-        }
-        else {
-            throw $_.Exception.Message
-        }
-    }
-    catch{
-        throw $_.Exception.Message
-    }
-    foreach($backupEnumeration in $backupEnumerations)
-    {
-        Write-Host $backupEnumeration.CreationTimeUtc
-        Write-Host $backupEnumeration.BackupType
-        Write-Host "Finding the finalDateTime in backupEnumerations."
-        if($backupEnumeration.BackupType -eq "Full")
-        {
-            $finalDateTimeObject = [DateTime]::Parse($backupEnumeration.CreationTimeUtc)
-            break
-        }
-    }
+    $finalDateTimeObject = Get-FinalDateTimeBefore -dateTimeBefore $dateTimeBefore -partitionid $partitionid -ClusterEndpoint $ClusterEndpoint
+    Write-Host $finalDateTimeObject
     foreach($filePath in $partitionDict[$partitionid])
     {
         Write-Host "Processing the file: " $filePath
@@ -211,8 +125,6 @@ foreach($partitionid in $partitionDict.Keys)
     }
     Write-Host "Cleanup for the partitionID: $partitionid is complete "
 }
-
-
 
 
 if($userName -ne $null -and $userName -ne "")

@@ -1,11 +1,10 @@
 Function Get-PartitionDict 
-{    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$pathsList
+{    param([Parameter(ParameterSetName="System.Collections.ArrayList", Mandatory=$true)][System.Collections.ArrayList]$pathsList
     ) 
 
     $partitionDict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
     foreach($path in $pathsList)
     {
-        Write-Host "Processing the path: $path `n"
         $pathList = $path.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
         $length = $pathList.Length
         $partitionID = $null
@@ -47,10 +46,11 @@ Function Get-PartitionDict
 
 Function Get-FinalDateTimeBefore 
 {   
-    param([Parameter(ParameterSetName="String", Mandatory=$true)][DateTime]$dateTimeBeforeObject, 
+    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$dateTimeBefore, 
     [Parameter(ParameterSetName="String", Mandatory=$true)][string]$partitionid, 
     [Parameter(ParameterSetName="String", Mandatory=$true)][string]$ClusterEndpoint
     )  
+    $dateTimeBeforeObject = [DateTime]::ParseExact($dateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
     $finalDateTimeObject = $dateTimeBeforeObject
     $dateTimeBeforeString = $dateTimeBeforeObject.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") 
     $url = "http://$ClusterEndpoint/Partitions/$partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
@@ -94,7 +94,6 @@ Function Get-FinalDateTimeBefore
     {
         Write-Host "The Backups Before this $dateTimeBeforeString date are corrupt as no full backup is found, So, deleting them."
     }
-
 
     return $finalDateTimeObject
 }
