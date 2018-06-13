@@ -1,5 +1,5 @@
 Function Get-PartitionDict 
-{    param([Parameter(ParameterSetName="System.Collections.ArrayList", Mandatory=$true)][System.Collections.ArrayList]$pathsList
+{    param([Parameter(ParameterSetName="    ", Mandatory=$true)][System.Collections.ArrayList]$pathsList
     ) 
 
     $partitionDict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
@@ -61,20 +61,17 @@ Function Get-FinalDateTimeBefore
         Write-Host "Trying to find sorted list of backupEnumerations from paged object."
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $false}
     }
-    catch [System.Net.WebException] {
+    catch  {
         $err = $_.ToString() | ConvertFrom-Json
-        if($err.Error.Code == "FABRIC_E_PARTITION_NOT_FOUND")
+        if($err.Error.Code -eq "FABRIC_E_PARTITION_NOT_FOUND")
         {
             Write-Host "$partitionid is not found. If you want to delete the data in this partition. Skipping this partition."
             Write-Host "If you want to remove this partition as well, please run the script by enabling force flag."
-            continue
+            return [DateTime]::MaxValue
         }
         else {
             throw $_.Exception.Message
         }
-    }
-    catch{
-        throw $_.Exception.Message
     }
     Write-Host "Finding the finalDateTime in backupEnumerations."
     Write-Host "Iterating over backupEnumerations till we find the last full backup"

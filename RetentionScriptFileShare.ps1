@@ -106,7 +106,6 @@ $partitionDict = Get-PartitionDict -pathsList $filePathList
 foreach($partitionid in $partitionDict.Keys)
 {
     $finalDateTimeObject = Get-FinalDateTimeBefore -dateTimeBefore $dateTimeBefore -partitionid $partitionid -ClusterEndpoint $ClusterEndpoint
-    Write-Host $finalDateTimeObject
     foreach($filePath in $partitionDict[$partitionid])
     {
         Write-Host "Processing the file: " $filePath

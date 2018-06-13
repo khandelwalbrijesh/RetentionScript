@@ -1,6 +1,6 @@
 param (
     [Parameter(Mandatory=$false)]
-    [String] $userName = $null,
+    [String] $userName,
 
     [Parameter(Mandatory=$false)]
     [String] $password,
@@ -18,7 +18,7 @@ param (
     [String] $ConnectionString,
 
     [Parameter(Mandatory=$false)]
-    [String []] $ContainerNames,
+    [String] $ContainerName,
 
     [Parameter(Mandatory=$false)]
     [string] $StorageAccountName,
@@ -27,23 +27,20 @@ param (
     [String] $StorageAccountKey,
 
     [Parameter(Mandatory=$true)]
-    [String] $ApplicationName,
-
-    [Parameter(Mandatory=$true)]
     [String] $ClusterEndPoint
 )
 
 
-if($StorageType == "FileShare")
+if($StorageType -eq "FileShare")
 {
-  if(!$fileSharePath.isPresent)
+  if(!$fileSharePath)
   {
     throw "Please specify file share path and then, run the script"
   }
 
-  if($userName.isPresent)
+  if($userName)
   {
-      if(!$password.isPresent)
+      if(!$password)
       {
           throw "If username is specified then, password should also be specified"
       } 
@@ -53,16 +50,16 @@ if($StorageType == "FileShare")
     .\RetentionScriptFileShare.ps1 -fileSharePath $fileSharePath -dateTimeBefore $dateTimeBefore -ClusterEndPoint $ClusterEndPoint
   }
 }
-elseif($StorageType == "AzureBlob")
+elseif($StorageType -eq "AzureBlob")
 {
-    if($ConnectionString.isPresent)
+    if($ConnectionString)
     {
-        if($ContainerNames.isPresent)
+        if($ContainerName)
         {
-            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -dateTimeBefore $dateTimeBefore -ContainerNames $ContainerNames -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -dateTimeBefore $dateTimeBefore -ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint
         }
         else {
-            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -dateTimeBefore $dateTimeBefore $ContainerNames -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -dateTimeBefore $dateTimeBefore $ContainerName -ClusterEndPoint $ClusterEndPoint
         }
     }
     else {
@@ -70,12 +67,12 @@ elseif($StorageType == "AzureBlob")
         {
             throw "StorageAccountName and StorageAccountKey must be specified to connect to the AzureBlobStore"
         }
-        if($ContainerNames.isPresent)
+        if($ContainerName)
         {
-            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccontName -StorageAccountKey $StorageAccountKey -dateTimeBefore $dateTimeBefore -ContainerNames $ContainerNames $ContainerNames -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -dateTimeBefore $dateTimeBefore -ContainerName $ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint
         }
         else {
-            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccontName -StorageAccountKey $StorageAccountKey -dateTimeBefore $dateTimeBefore -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -dateTimeBefore $dateTimeBefore -ClusterEndPoint $ClusterEndPoint
         }        
     }
 }
