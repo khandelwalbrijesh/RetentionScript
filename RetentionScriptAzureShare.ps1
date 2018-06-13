@@ -1,8 +1,5 @@
 param (
     [Parameter(Mandatory=$false)]
-    [String] $StorageType,
-
-    [Parameter(Mandatory=$false)]
     [String] $ConnectionString,
 
     [Parameter(Mandatory=$false)]
@@ -15,12 +12,42 @@ param (
     [String] $StorageAccountKey,
     
     [Parameter(Mandatory=$true)]
-    [String] $dateTimeBefore,
+    [String] $DateTimeBefore,
     
     [Parameter(Mandatory=$true)]
-    [String] $ClusterEndpoint
+    [String] $ClusterEndpoint,
+
+    [Parameter(Mandatory=$false)]
+    [switch] $Force,
+
+    [Parameter(Mandatory=$false)]
+    [String] $PartitionId,
+
+    [Parameter(Mandatory=$false)]
+    [String] $ApplicationId,
+
+    [Parameter(Mandatory=$false)]
+    [String] $ServiceId,
+
+    [Parameter(Mandatory=$false)]
+    [String] $SSLCertificateThumbPrint
 )
 . .\UtilScript.ps1
+
+$partitionIdListToWatch = New-Object System.Collections.ArrayList
+
+if($ApplicationId -ne $null)
+{
+    $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
+}
+elseif($ServiceId -ne $null)
+{
+    $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
+} 
+elseif($PartitionId -ne $null)
+{
+    $partitionIdListToWatch.Add($PartitionId) 
+}
 
 $contextForStorageAccount = $null
 
@@ -41,29 +68,43 @@ if(!$ContainerName.IsPresent)
     $containers = Get-AzureStorageContainer -Context $contextForStorageAccount
     foreach($container in $containers)
     {
-        $containerNameList.Add($container.Name)
+        $containerNameList.Add($container.Name) | Out-Null
     }
 }
 Else {
-    $containerNameList.Add($ContainerName)
+    $containerNameList.Add($ContainerName) | Out-Null
 }
 
 foreach($containerName in $containerNameList)
 {
-    $blobs  = Get-AzureStorageBlob -Container $containerName -Context $contextForStorageAccount
+    $token = $null
+    $pathsList = New-Object System.Collections.ArrayList    
+    do
+    {
+        $blobs = Get-AzureStorageBlob -Container $ContainerName -ContinuationToken $token
+            
+        foreach($blob in $blobs)    
+        {
+            $pathsList.Add($blob.Name) | Out-Null
+        }
+        if($blobs.Length -le 0) { Break;}
+        $token = $blobs[$blobs.Count -1].ContinuationToken;
+    }
+    While ($token -ne $Null)
     $partitionDict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
     $finalDateTimeObject = $dateTimeBeforeObject
-    $pathsList = New-Object System.Collections.ArrayList
-    foreach($blob in $blobs)    
-    {
-        $pathsList.Add($blob.Name)
-    }
     $partitionDict = Get-PartitionDict -pathsList $pathsList
+    $partitionCountDict = New-Object 'system.collections.generic.dictionary[[String],[Int]'
 
     foreach($partitionid in $partitionDict.Keys)
     {
-        $finalDateTimeObject = Get-FinalDateTimeBefore -dateTimeBefore $dateTimeBefore -partitionid $partitionid -ClusterEndpoint $ClusterEndpoint
-        if($finalDateTimeObject -eq [DateTime]::MaxValue)
+        $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Length
+        if($partitionIdListToWatch.Length -ne 0 -and !$partitionIdListToWatch.Contains($partitionid) )
+        {
+            continue
+        }
+        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        if($finalDateTimeObject -eq [DateTime]::MinValue)
         {
             continue
         }
@@ -82,11 +123,46 @@ foreach($containerName in $containerNameList)
                 {
                     Write-Host "Deleting the file: $blobPath"
                     Remove-AzureStorageBlob -Blob $blobPath -Container $containerName -Context $contextForStorageAccount
+                    $partitionCountDict[$partitionid] = $partitionCountDict[$partitionid] -1
+                    if($partitionCountDict[$partitionid] -eq 0)
+                    {
+                        throw "There is some code bug here."
+                    }
                 }
             }
         }
         Write-Host "Cleanup for the partitionID: $partitionid is complete "
     }
+}
+
+
+$newPathsList = New-Object System.Collections.ArrayList
+$newToken = $null  
+do
+{
+    $blobs = Get-AzureStorageBlob -Container $ContainerName -ContinuationToken $newToken
+        
+    foreach($blob in $blobs)    
+    {
+        $newPathsList.Add($blob.Name) | Out-Null
+    }
+    if($blobs.Length -le 0) { Break;}
+    $newToken = $blobs[$blobs.Count -1].ContinuationToken;
+}
+While ($newToken -ne $Null)
+
+$newPartitionDict = Get-PartitionDict -pathsList $newPathsList
+
+foreach($partitionid in $newPartitionDict.Keys)
+{
+    if($partitionCountDict.ContainsKey)
+    {
+        if($partitionCountDict[$partitionid] -gt $newPartitionDict[$partitionid].Length)
+        {
+            throw "The partition with partitionId : $partitionid has less number of backups than expected."
+        }
+    }
+    Start-BackupDataCorruptionTest -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
 }
 
 

@@ -1,22 +1,33 @@
 param (
     [Parameter(Mandatory=$false)]
-    [String] $userName = $null,
+    [String] $UserName,
 
     [Parameter(Mandatory=$false)]
-    [String] $password,
+    [String] $Password,
 
     [Parameter(Mandatory=$true)]
-    [String] $fileSharePath,
+    [String] $FileSharePath,
 
-    # this needs to be put in the main powershell script used to excute both these scripts
+    [Parameter(Mandatory=$true)]
+    [String] $DateTimeBefore,    
+
+    [Parameter(Mandatory=$true)]
+    [String] $ClusterEndpoint,
+
     [Parameter(Mandatory=$false)]
-    [String] $StorageType,
+    [switch] $Force,
 
-    [Parameter(Mandatory=$true)]
-    [String] $dateTimeBefore,    
+    [Parameter(Mandatory=$false)]
+    [String] $PartitionId,
 
-    [Parameter(Mandatory=$true)]
-    [String] $ClusterEndpoint
+    [Parameter(Mandatory=$false)]
+    [String] $SSLCertificateThumbPrint,
+    
+    [Parameter(Mandatory=$false)]
+    [String] $ApplicationId,
+
+    [Parameter(Mandatory=$false)]
+    [String] $ServiceId
 )
 
 
@@ -31,7 +42,7 @@ Add-Type -Namespace Import -Name Win32 -MemberDefinition @'
 
 Function Get-LogonUserToken 
 {
-    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$Username, 
+    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$UsernameToLogon, 
     [Parameter(ParameterSetName="String", Mandatory=$true)][string]$Domain, 
     [Parameter(ParameterSetName="String", Mandatory=$true)][string]$Pass,
     [Parameter(ParameterSetName="String", Mandatory=$false)][string]$LogonType = 'NEW_CREDENTIALS',
@@ -56,7 +67,7 @@ Function Get-LogonUserToken
         'WINNT50' { 3 }
     }
 
-    $returnValue = [Import.Win32]::LogonUser($Username, $Domain, $Password, $LogonTypeID, $LogonProviderID, [ref]$tokenHandle) 
+    $returnValue = [Import.Win32]::LogonUser($UsernameToLogon, $Domain, $Pass, $LogonTypeID, $LogonProviderID, [ref]$tokenHandle) 
  
     #If it fails, throw the verbose with the error code 
     if (!$returnValue) { 
@@ -72,8 +83,23 @@ Function Get-LogonUserToken
 $filePathList = New-Object System.Collections.ArrayList
 $Global:ImpersonatedUser = @{} 
 
+$partitionIdListToWatch = New-Object System.Collections.ArrayList
 
-if($userName -ne $null -and $userName -ne "")
+if($ApplicationId -ne $null)
+{
+    $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
+}
+elseif($ServiceId -ne $null)
+{
+    $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
+} 
+elseif($PartitionId -ne $null)
+{
+    $partitionIdListToWatch.Add($PartitionId) 
+}
+
+
+if($UserName)
 {
     $userNameDomainList = $username.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
 
@@ -83,11 +109,11 @@ if($userName -ne $null -and $userName -ne "")
         $domain = $userNameDomainList[0]
     }
     else {
-        $userNameToTry = $userName
+        $userNameToTry = $UserName
         $domain = "."
     }
     
-    $userToken = Get-LogonUserToken  -Username $userNameToTry -Domain $domain -Pass $password
+    $userToken = Get-LogonUserToken  -Username $userNameToTry -Domain $domain -Pass $Password
     $Global:ImpersonatedUser.ImpersonationContext = [System.Security.Principal.WindowsIdentity]::Impersonate($userToken) 
          
     # Close the handle to the token. Voided to mask the Boolean return value. 
@@ -95,17 +121,27 @@ if($userName -ne $null -and $userName -ne "")
     
 }
 
-Write-Host "Enumerating the Share : $fileSharePath"
+Write-Host "Enumerating the Share : $FileSharePath"
 
 # Here i will perform the impersonation task and make it proper.
-Get-ChildItem -Path $fileSharePath -Include *.bkmetadata -Recurse | ForEach-Object {$filePathList.Add($_.FullName)} 
-Get-ChildItem -Path $fileSharePath -Include *.zip -Recurse | ForEach-Object {$filePathList.Add($_.FullName)} 
+Get-ChildItem -Path $FileSharePath -Include *.bkmetadata -Recurse | ForEach-Object {$filePathList.Add($_.FullName) | Out-Null} 
+Get-ChildItem -Path $FileSharePath -Include *.zip -Recurse | ForEach-Object {$filePathList.Add($_.FullName) | Out-Null} 
 
 $partitionDict = Get-PartitionDict -pathsList $filePathList
+$partitionCountDict = New-Object 'system.collections.generic.dictionary[[String],[Int]'
     
 foreach($partitionid in $partitionDict.Keys)
 {
-    $finalDateTimeObject = Get-FinalDateTimeBefore -dateTimeBefore $dateTimeBefore -partitionid $partitionid -ClusterEndpoint $ClusterEndpoint
+    $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Length
+    if($partitionIdListToWatch.Length -ne 0 -and !$partitionIdListToWatch.Contains($partitionid) )
+    {
+        continue
+    }
+    $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    if($finalDateTimeObject -eq [DateTime]::MinValue)
+    {
+        continue
+    }
     foreach($filePath in $partitionDict[$partitionid])
     {
         Write-Host "Processing the file: " $filePath
@@ -119,14 +155,39 @@ foreach($partitionid in $partitionDict.Keys)
             {
                 Write-Host "Deleting the file: $filePath"
                 Remove-Item -Path $filePath
+                $partitionCountDict[$partitionid] = $partitionCountDict[$partitionid] -1
+                if($partitionCountDict[$partitionid] -eq 0)
+                {
+                    throw "There is some code bug here."
+                }
             }
         }
     }
     Write-Host "Cleanup for the partitionID: $partitionid is complete "
 }
 
+# Here our test code will work.
+$testFilePathList = New-Object System.Collections.ArrayList
 
-if($userName -ne $null -and $userName -ne "")
+Get-ChildItem -Path $FileSharePath -Include *.bkmetadata -Recurse | ForEach-Object {$testFilePathList.Add($_.FullName) | Out-Null} 
+Get-ChildItem -Path $FileSharePath -Include *.zip -Recurse | ForEach-Object {$testFilePathList.Add($_.FullName) | Out-Null} 
+$newPartitionDict = Get-PartitionDict -pathsList $filePathList
+
+foreach($partitionid in $newPartitionDict.Keys)
+{
+    if($partitionCountDict.ContainsKey)
+    {
+        if($partitionCountDict[$partitionid] -gt $newPartitionDict[$partitionid].Length)
+        {
+            throw "The partition with partitionId : $partitionid has less number of backups than expected."
+        }
+    }
+    Start-BackupDataCorruptionTest -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+}
+
+
+
+if($UserName)
 {   
     $ImpersonatedUser.ImpersonationContext.Undo() 
     
@@ -134,8 +195,4 @@ if($userName -ne $null -and $userName -ne "")
     Remove-Variable ImpersonatedUser -Scope Global 
 }
 
-
-
-
-
-
+# Now we will go for enumeration

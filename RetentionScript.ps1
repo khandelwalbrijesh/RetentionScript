@@ -1,18 +1,18 @@
 param (
     [Parameter(Mandatory=$false)]
-    [String] $userName,
+    [String] $UserName,
 
     [Parameter(Mandatory=$false)]
-    [String] $password,
+    [String] $Password,
 
     [Parameter(Mandatory=$false)]
-    [String] $fileSharePath,
+    [String] $FileSharePath,
 
     [Parameter(Mandatory=$true)]
     [String] $StorageType,
 
     [Parameter(Mandatory=$true)]
-    [String] $dateTimeBefore,
+    [String] $DateTimeBefore,
     
     [Parameter(Mandatory=$false)]
     [String] $ConnectionString,
@@ -27,27 +27,59 @@ param (
     [String] $StorageAccountKey,
 
     [Parameter(Mandatory=$true)]
-    [String] $ClusterEndPoint
+    [String] $ClusterEndPoint,
+
+    [Parameter(Mandatory=$false)]
+    [switch] $Force,
+
+    [Parameter(Mandatory=$false)]
+    [String] $PartitionId,
+
+    [Parameter(Mandatory=$false)]
+    [String] $SSLCertificateThumbPrint,
+    
+    [Parameter(Mandatory=$false)]
+    [String] $ApplicationId,
+
+    [Parameter(Mandatory=$false)]
+    [String] $ServiceId
 )
+if(!$PartitionId)
+{
+    $PartitionId = $null
+}
+if(!$ApplicationId)
+{
+    $ApplicationId = $null
+}
+if(!$ServiceId)
+{
+    $ServiceId = $null
+}
+
+if(!$SSLCertificateThumbPrint)
+{
+    $SSLCertificateThumbPrint = $null
+}
 
 
 if($StorageType -eq "FileShare")
 {
-  if(!$fileSharePath)
+  if(!$FileSharePath)
   {
     throw "Please specify file share path and then, run the script"
   }
 
-  if($userName)
+  if($UserName)
   {
-      if(!$password)
+      if(!$Password)
       {
           throw "If username is specified then, password should also be specified"
       } 
-      .\RetentionScriptFileShare.ps1 -userName $userName -fileSharePath $fileSharePath -password $password -dateTimeBefore $dateTimeBefore -ClusterEndPoint $ClusterEndPoint
+      .\RetentionScriptFileShare.ps1 -UserName $UserName -FileSharePath $FileSharePath -Password $Password -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId
   }
   else {
-    .\RetentionScriptFileShare.ps1 -fileSharePath $fileSharePath -dateTimeBefore $dateTimeBefore -ClusterEndPoint $ClusterEndPoint
+    .\RetentionScriptFileShare.ps1 -FileSharePath $FileSharePath -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId
   }
 }
 elseif($StorageType -eq "AzureBlob")
@@ -56,26 +88,31 @@ elseif($StorageType -eq "AzureBlob")
     {
         if($ContainerName)
         {
-            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -dateTimeBefore $dateTimeBefore -ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -DateTimeBefore $DateTimeBefore -ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId
         }
         else {
-            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -dateTimeBefore $dateTimeBefore $ContainerName -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -DateTimeBefore $DateTimeBefore $ContainerName -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId
         }
     }
     else {
-        if(!$StorageAccountName -or !$StorageAccountKey)
+        if(!$StorageAccountName)
         {
-            throw "StorageAccountName and StorageAccountKey must be specified to connect to the AzureBlobStore"
+            throw "StorageAccountName must be specified to connect to the AzureBlobStore"
         }
+        if(!$StorageAccountKey)
+        {
+            throw "StorageAccountKey must be specified to connect to the AzureBlobStore"
+        }
+
         if($ContainerName)
         {
-            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -dateTimeBefore $dateTimeBefore -ContainerName $ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -DateTimeBefore $DateTimeBefore -ContainerName $ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId
         }
         else {
-            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -dateTimeBefore $dateTimeBefore -ClusterEndPoint $ClusterEndPoint
+            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId
         }        
     }
 }
 else {
-    throw "The storage of type " +  $storageType + "is not supported"
+    throw "The storage of type $StorageType not supported"
 }
