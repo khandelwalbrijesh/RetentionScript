@@ -4,9 +4,6 @@ param (
     [String] $UserName,
 
     [Parameter(Mandatory=$false)]
-    [String] $Password,
-
-    [Parameter(Mandatory=$false)]
     [String] $FileSharePath,
 
     [Parameter(Mandatory=$true)]
@@ -56,11 +53,7 @@ if($StorageType -eq "FileShare")
 
   if($UserName)
   {
-      if(!$Password)
-      {
-          $Password = Read-Host -Prompt "Please enter password for the userName: $UserName"
-      } 
-      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -Password `"$Password`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
   }
   else {
     $command = $command +  ".\RetentionScriptFileShare.ps1 -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""

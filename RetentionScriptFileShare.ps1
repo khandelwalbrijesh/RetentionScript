@@ -4,7 +4,7 @@ param (
     [String] $UserName,
 
     [Parameter(Mandatory=$false)]
-    [String] $Password,
+    [SecureString] $Password,
 
     [Parameter(Mandatory=$true)]
     [String] $FileSharePath,
@@ -43,11 +43,11 @@ Add-Type -Namespace Import -Name Win32 -MemberDefinition @'
 
 Function Get-LogonUserToken 
 {
-    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$UsernameToLogon, 
-    [Parameter(ParameterSetName="String", Mandatory=$true)][string]$Domain, 
-    [Parameter(ParameterSetName="String", Mandatory=$true)][string]$Pass,
-    [Parameter(ParameterSetName="String", Mandatory=$false)][string]$LogonType = 'NEW_CREDENTIALS',
-    [Parameter(ParameterSetName="String", Mandatory=$false)][string]$LogonProvider = 'WINNT50'
+    param([Parameter(Mandatory=$true)][string]$UsernameToLogon, 
+    [Parameter(Mandatory=$true)][string]$Domain, 
+    [Parameter(Mandatory=$true)][SecureString]$Pass,
+    [Parameter(Mandatory=$false)][string]$LogonType = 'NEW_CREDENTIALS',
+    [Parameter(Mandatory=$false)][string]$LogonProvider = 'WINNT50'
     ) 
     
     $tokenHandle =  [IntPtr]::Zero
@@ -67,8 +67,9 @@ Function Get-LogonUserToken
         'WINNT40' { 2 }
         'WINNT50' { 3 }
     }
-
-    $returnValue = [Import.Win32]::LogonUser($UsernameToLogon, $Domain, $Pass, $LogonTypeID, $LogonProviderID, [ref]$tokenHandle) 
+    $unmanagedString = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Pass)
+    $passunenc = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($unmanagedString)
+    $returnValue = [Import.Win32]::LogonUser($UsernameToLogon, $Domain, $passunenc, $LogonTypeID, $LogonProviderID, [ref]$tokenHandle) 
  
     #If it fails, throw the verbose with the error code 
     if (!$returnValue) { 
@@ -105,6 +106,7 @@ elseif($PartitionId)
 
 if($UserName)
 {
+    $Password = Read-Host -Prompt "Please enter password for the userName: $UserName" -AsSecureString
     $userNameDomainList = $username.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
 
     if($userNameDomainList.Count -eq 2)
