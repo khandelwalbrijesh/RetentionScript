@@ -1,3 +1,4 @@
+[CmdletBinding(PositionalBinding = $false)]
 param (
     [Parameter(Mandatory=$false)]
     [String] $ConnectionString,
@@ -18,16 +19,16 @@ param (
     [String] $ClusterEndpoint,
 
     [Parameter(Mandatory=$false)]
-    [switch] $Force,
+    [bool] $Force,
 
     [Parameter(Mandatory=$false)]
     [String] $PartitionId,
 
     [Parameter(Mandatory=$false)]
-    [String] $ApplicationId,
+    [String] $ServiceId,
 
     [Parameter(Mandatory=$false)]
-    [String] $ServiceId,
+    [String] $ApplicationId,
 
     [Parameter(Mandatory=$false)]
     [String] $SSLCertificateThumbPrint
@@ -36,16 +37,19 @@ param (
 
 $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
-if($ApplicationId -ne $null)
+if($ApplicationId -ne "")
 {
+    Write-Host "Trying to find all the partitions in application : $ApplicationId"
     $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
 }
-elseif($ServiceId -ne $null)
+elseif($ServiceId -ne "")
 {
+    Write-Host "Trying to find all the partitions in Service : $ServiceId"
     $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
 } 
-elseif($PartitionId -ne $null)
+elseif($PartitionId -ne "")
 {
+    Write-Host "Trying to find all the partitions in Partition : $PartitionId"
     $partitionIdListToWatch.Add($PartitionId) 
 }
 
@@ -69,7 +73,7 @@ if(!$ContainerName.IsPresent)
     foreach($container in $containers)
     {
         $containerNameList.Add($container.Name) | Out-Null
-    }
+    }   
 }
 Else {
     $containerNameList.Add($ContainerName) | Out-Null
@@ -81,26 +85,27 @@ foreach($containerName in $containerNameList)
     $pathsList = New-Object System.Collections.ArrayList    
     do
     {
-        $blobs = Get-AzureStorageBlob -Container $ContainerName -ContinuationToken $token
+        $blobs = Get-AzureStorageBlob -Container $ContainerName -ContinuationToken $token -Context $contextForStorageAccount
             
         foreach($blob in $blobs)    
         {
             $pathsList.Add($blob.Name) | Out-Null
         }
-        if($blobs.Length -le 0) { Break;}
+        if($blobs.Count -le 0) { Break;}
         $token = $blobs[$blobs.Count -1].ContinuationToken;
     }
     While ($token -ne $Null)
     $partitionDict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
     $finalDateTimeObject = $dateTimeBeforeObject
     $partitionDict = Get-PartitionDict -pathsList $pathsList
-    $partitionCountDict = New-Object 'system.collections.generic.dictionary[[String],[Int]'
+    $partitionCountDict = New-Object 'system.collections.generic.dictionary[[String],[Int32]]'
 
     foreach($partitionid in $partitionDict.Keys)
     {
-        $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Length
-        if($partitionIdListToWatch.Length -ne 0 -and !$partitionIdListToWatch.Contains($partitionid) )
+        $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Count
+        if($partitionIdListToWatch.Count -ne 0 -and !$partitionIdListToWatch.Contains($partitionid))
         {
+            Write-Host "Continuing for this $partitionid"
             continue
         }
         $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
@@ -135,18 +140,19 @@ foreach($containerName in $containerNameList)
     }
 }
 
+Write-Host "Now testing the cleanup."
 
 $newPathsList = New-Object System.Collections.ArrayList
 $newToken = $null  
 do
 {
-    $blobs = Get-AzureStorageBlob -Container $ContainerName -ContinuationToken $newToken
+    $blobs = Get-AzureStorageBlob -Container $ContainerName -ContinuationToken $newToken -Context $contextForStorageAccount
         
     foreach($blob in $blobs)    
     {
         $newPathsList.Add($blob.Name) | Out-Null
     }
-    if($blobs.Length -le 0) { Break;}
+    if($blobs.Count -le 0) { Break;}
     $newToken = $blobs[$blobs.Count -1].ContinuationToken;
 }
 While ($newToken -ne $Null)
@@ -157,12 +163,12 @@ foreach($partitionid in $newPartitionDict.Keys)
 {
     if($partitionCountDict.ContainsKey)
     {
-        if($partitionCountDict[$partitionid] -gt $newPartitionDict[$partitionid].Length)
+        if($partitionCountDict[$partitionid] -gt $newPartitionDict[$partitionid].Count)
         {
             throw "The partition with partitionId : $partitionid has less number of backups than expected."
         }
     }
-    Start-BackupDataCorruptionTest -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    Start-BackupDataCorruptionTest -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
 }
 
 

@@ -1,3 +1,4 @@
+[CmdletBinding(PositionalBinding = $false)]
 param (
     [Parameter(Mandatory=$false)]
     [String] $UserName,
@@ -15,19 +16,19 @@ param (
     [String] $ClusterEndpoint,
 
     [Parameter(Mandatory=$false)]
-    [switch] $Force,
+    [bool] $Force,
 
     [Parameter(Mandatory=$false)]
     [String] $PartitionId,
 
     [Parameter(Mandatory=$false)]
-    [String] $SSLCertificateThumbPrint,
-    
+    [String] $ServiceId,
+
     [Parameter(Mandatory=$false)]
     [String] $ApplicationId,
 
     [Parameter(Mandatory=$false)]
-    [String] $ServiceId
+    [String] $SSLCertificateThumbPrint
 )
 
 
@@ -85,16 +86,19 @@ $Global:ImpersonatedUser = @{}
 
 $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
-if($ApplicationId -ne $null)
+if($ApplicationId -ne "")
 {
+    Write-Host "Trying to find all the partitions in application : $ApplicationId"
     $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
 }
-elseif($ServiceId -ne $null)
+elseif($ServiceId -ne "")
 {
+    Write-Host "Trying to find all the partitions in Service : $ServiceId"
     $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
 } 
-elseif($PartitionId -ne $null)
+elseif($PartitionId -ne "")
 {
+    Write-Host "Trying to find all the partitions in Partition : $PartitionId"
     $partitionIdListToWatch.Add($PartitionId) 
 }
 
@@ -103,7 +107,7 @@ if($UserName)
 {
     $userNameDomainList = $username.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
 
-    if($userNameDomainList.Length -eq 2)
+    if($userNameDomainList.Count -eq 2)
     {
         $userNameToTry = $userNameDomainList[1]
         $domain = $userNameDomainList[0]
@@ -128,16 +132,22 @@ Get-ChildItem -Path $FileSharePath -Include *.bkmetadata -Recurse | ForEach-Obje
 Get-ChildItem -Path $FileSharePath -Include *.zip -Recurse | ForEach-Object {$filePathList.Add($_.FullName) | Out-Null} 
 
 $partitionDict = Get-PartitionDict -pathsList $filePathList
-$partitionCountDict = New-Object 'system.collections.generic.dictionary[[String],[Int]'
+$partitionCountDict = New-Object 'system.collections.generic.dictionary[[String],[Int32]]'
     
 foreach($partitionid in $partitionDict.Keys)
 {
-    $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Length
-    if($partitionIdListToWatch.Length -ne 0 -and !$partitionIdListToWatch.Contains($partitionid) )
+    $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Count
+    if($partitionIdListToWatch.Count -ne 0 -and !$partitionIdListToWatch.Contains($partitionid) )
     {
         continue
     }
-    $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    if($SSLCertificateThumbPrint -ne "")
+    {
+        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    }
+    else {
+        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force        
+    }
     if($finalDateTimeObject -eq [DateTime]::MinValue)
     {
         continue
@@ -166,6 +176,8 @@ foreach($partitionid in $partitionDict.Keys)
     Write-Host "Cleanup for the partitionID: $partitionid is complete "
 }
 
+
+Write-Host "Now testing the cleanup."
 # Here our test code will work.
 $testFilePathList = New-Object System.Collections.ArrayList
 
@@ -177,12 +189,12 @@ foreach($partitionid in $newPartitionDict.Keys)
 {
     if($partitionCountDict.ContainsKey)
     {
-        if($partitionCountDict[$partitionid] -gt $newPartitionDict[$partitionid].Length)
+        if($partitionCountDict[$partitionid] -gt $newPartitionDict[$partitionid].Count)
         {
             throw "The partition with partitionId : $partitionid has less number of backups than expected."
         }
     }
-    Start-BackupDataCorruptionTest -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    Start-BackupDataCorruptionTest -DateTimeBefore $DateTimeBefore  -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
 }
 
 

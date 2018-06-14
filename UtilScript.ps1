@@ -1,17 +1,19 @@
 Function Get-PartitionDict 
-{    param([Parameter(ParameterSetName="System.Collections.ArrayList", Mandatory=$true)][System.Collections.ArrayList]$pathsList
+{    
+    [CmdletBinding(PositionalBinding = $false)]
+    param([Parameter(Mandatory=$true)][System.Collections.ArrayList]$pathsList
     ) 
 
     $partitionDict = New-Object 'system.collections.generic.dictionary[[string],[system.collections.generic.list[string]]]'
     foreach($path in $pathsList)
     {
         $pathList = $path.Split("\",[StringSplitOptions]'RemoveEmptyEntries')
-        $length = $pathList.Length
+        $length = $pathList.Count
         $partitionID = $null
         if($length -le 1)
         {
             $pathList = $path.Split("/",[StringSplitOptions]'RemoveEmptyEntries')
-            $length = $pathList.Length
+            $length = $pathList.Count
             if($length -le 1)
             {
                 throw "$path is not in correct format."
@@ -25,7 +27,6 @@ Function Get-PartitionDict
             $partitionID = $pathList[$length - 2]            
         }
         
-        Write-Host "Partition Id extracted is this $partitionID"
     
         if($partitionID -eq $null)
         {
@@ -34,6 +35,7 @@ Function Get-PartitionDict
         
         if(!$partitionDict.ContainsKey($partitionID))
         {
+            Write-Host "Partition Id extracted is this $partitionID"
             $partitionDict.Add($partitionID, $path)
         }
         else {
@@ -46,12 +48,14 @@ Function Get-PartitionDict
 
 Function Get-FinalDateTimeBefore 
 {   
-    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$DateTimeBefore, 
-    [Parameter(ParameterSetName="String", Mandatory=$true)][string]$Partitionid, 
-    [Parameter(ParameterSetName="String", Mandatory=$true)][string]$ClusterEndpoint,
-    [Parameter(ParameterSetName="switch", Mandatory=$false)][switch]$Force,
-    [Parameter(ParameterSetName="String", Mandatory=$false)][switch]$SSLCertificateThumbPrint
+    [CmdletBinding(PositionalBinding = $false)]    
+    param([Parameter(Mandatory=$true)][string]$DateTimeBefore, 
+    [Parameter(Mandatory=$true)][string]$Partitionid, 
+    [Parameter(Mandatory=$true)][string]$ClusterEndpoint,
+    [Parameter(Mandatory=$false)][bool]$Force,
+    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
     )  
+
     # DateTime Improvement to be done here.
     $dateTimeBeforeObject = [DateTime]::ParseExact($DateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
     $finalDateTimeObject = $dateTimeBeforeObject
@@ -60,11 +64,12 @@ Function Get-FinalDateTimeBefore
     $backupEnumerations = $null
     try {
         Write-Host "Querying the URL: $url"
-        if($SSLCertificateThumbPrint -ne $null)
+        if($SSLCertificateThumbPrint -ne "")
         {
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
         }
         else {
+            Write-Host "Trying to query without cert thumbprint"
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url            
         }
         Write-Host "Trying to find sorted list of backupEnumerations from paged object."
@@ -105,7 +110,7 @@ Function Get-FinalDateTimeBefore
             break
         }
     }
-    if($backupEnumerations.Length -eq 0)
+    if($backupEnumerations.Count -eq 0)
     {
         Write-Host "The BackupEnumerations had length equal to 0. So, not deleting anything."
         return [DateTime]::MinValue
@@ -121,47 +126,52 @@ Function Get-FinalDateTimeBefore
 
 Function Get-PartitionIdList 
 {   
-    param([Parameter(ParameterSetName="String", Mandatory=$false)][string]$ApplicationId, 
-    [Parameter(ParameterSetName="String", Mandatory=$false)][string]$ServiceId
+    [CmdletBinding(PositionalBinding = $false)]
+    param([Parameter(Mandatory=$false)][string]$ApplicationId, 
+    [Parameter(Mandatory=$false)][string]$ServiceId
     ) 
     # need to add continuationToken Logic here.
     $serviceIdList = New-Object System.Collections.ArrayList
-    if(ApplicationId)
+    if($ApplicationId)
     {
-        $serviceIdList = Get-ServiceIdList $ApplicationId
+        $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId   
     }
     else {
-        $serviceIdList.Add($ServiceId)
+        $serviceIdList.Add($ServiceId) | Out-Null
     }
 
     $partitionIdList = New-Object System.Collections.ArrayList
 
-
+    Write-Host "Finding partitionID list"
     foreach($serviceId in $serviceIdList)
     {
+        Write-Host "$serviceId"
         $continuationToken = $null
         do
         {
             $partitionInfoList = Invoke-RestMethod "http://localhost:19080/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken"
             foreach($partitionInfo in $partitionInfoList.Items)
             {
+                $partitionid = $partitionInfo.PartitionInformation.Id
+                Write-Host "$partitionid"    
                 $partitionIdList.Add($partitionInfo.PartitionInformation.Id)
             }
             $continuationToken = $partitionInfoList.ContinuationToken
-
-        }while($continuationToken -ne $null)
-
+        }while($continuationToken -ne "")
     }
-
+    $length = $partitionIdList.Count
+    Write-Host "the total number of partitions found are $length"
     return $partitionIdList
 }
 
 
 Function Get-ServiceIdList 
 {   
-    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$ApplicationId
+    [CmdletBinding(PositionalBinding = $false)]
+    param([Parameter(Mandatory=$true)][string]$ApplicationId
         )
 
+    Write-Host "Trying to find the service ID list."
     # need to add continuationToken Logic here.    
     $continuationToken = $null
     $serviceIdList = New-Object System.Collections.ArrayList
@@ -170,27 +180,38 @@ Function Get-ServiceIdList
         $serviceInfoList = Invoke-RestMethod "http://localhost:19080/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken"
         foreach($serviceInfo in $serviceInfoList.Items)
         {
-            $serviceIdList.Add($serviceInfo.Id)
+            $serviceIdList.Add($serviceInfo.Id) | Out-Null
+            $serviceId = $serviceInfo.Id
+            Write-Host "$serviceId"
         }
         $continuationToken = $serviceInfoList.ContinuationToken
-    }while($continuationToken -ne $null)
+    }while($continuationToken -ne "")
 
+    $length = $serviceIdList.Count
+    Write-Host "$ApplicationId has $length number of services"
     return $serviceIdList
 }
 
 
 Function Start-BackupDataCorruptionTest 
 {  
-    param([Parameter(ParameterSetName="String", Mandatory=$true)][string]$Partitionid, 
-    [Parameter(ParameterSetName="String", Mandatory=$true)][string]$ClusterEndpoint,
-    [Parameter(ParameterSetName="String", Mandatory=$false)][switch]$SSLCertificateThumbPrint
-    )  
+    [CmdletBinding(PositionalBinding = $false)]
+    param([Parameter(Mandatory=$true)][string]$DateTimeBefore,
+    [Parameter(Mandatory=$true)][string]$Partitionid, 
+    [Parameter(Mandatory=$true)][string]$ClusterEndpoint,
+    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
+    )
+    $dateTimeBeforeObject = [DateTime]::ParseExact($DateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
+    $finalDateTimeObject = $dateTimeBeforeObject
+    $dateTimeBeforeString = $dateTimeBeforeObject.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") 
     # DateTime Improvement to be done here.
-    $url = "http://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview"
+    $url = "http://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
+    Write-Host "$url"
+    
     $backupEnumerations = $null
     try {
         Write-Host "Querying the URL: $url"
-        if($SSLCertificateThumbPrint -ne $null)
+        if($SSLCertificateThumbPrint -ne "")
         {
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
         }
@@ -199,7 +220,8 @@ Function Start-BackupDataCorruptionTest
         }
         Write-Host "Trying to find sorted list of backupEnumerations from paged object."
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $true}
-        if($backupEnumerations.Items[0].BackupType -ne "Full")
+        
+        if($backupEnumerations -ne $null -and $backupEnumerations[0].BackupType -ne "Full")
         {
             throw "Data is corrupted for this partition : $Partitionid"
         }
