@@ -127,11 +127,16 @@ while(True)
     $dateTimeBefore = [DateTime]::UtcNow - $DateTimeBeforeTimeSpan
     $dateTimeBeforeToPass = $dateTimeBefore.ToUniversalTime().ToString("yyyy-MM-dd HH.mm.ssZ")
     $command = $command + " -DateTimeBefore `"$dateTimeBeforeToPass`""    
-    $timeSpan = [TimeSpan]::Parse($TimeSpanToSchedule)
+    
     Write-Host "Final Command : $command"
     $scriptBlock = [ScriptBlock]::Create($command)
     Invoke-Command $scriptBlock
+    if($TimeSpanToSchedule -eq "0")
+    {
+        break
+    }
 
+    $timeSpan = [TimeSpan]::Parse($TimeSpanToSchedule)
     # Sleep for scheduled time and run the script again.
     Start-Sleep -s $timeSpan.TotalSeconds
 }
