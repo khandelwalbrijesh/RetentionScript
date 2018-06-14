@@ -56,10 +56,10 @@ if($StorageType -eq "FileShare")
 
   if($UserName)
   {
-      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`"  -ClusterEndPoint `"$ClusterEndPoint`""
   }
   else {
-    $command = $command +  ".\RetentionScriptFileShare.ps1 -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+    $command = $command +  ".\RetentionScriptFileShare.ps1 -FileSharePath `"$FileSharePath`"  -ClusterEndPoint `"$ClusterEndPoint`""
   }
 }
 elseif($StorageType -eq "AzureBlob")
@@ -68,10 +68,10 @@ elseif($StorageType -eq "AzureBlob")
     {
         if($ContainerName)
         {
-            $command = $command + ".\RetentionScriptAzureShare.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+            $command = $command + ".\RetentionScriptAzureShare.ps1 -ConnectionString `"$ConnectionString`"  -ClusterEndPoint `"$ClusterEndPoint`""
         }
         else {
-            $command = $command + ".\RetentionScriptAzureShare.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
+            $command = $command + ".\RetentionScriptAzureShare.ps1 -ConnectionString `"$ConnectionString`"  -ClusterEndPoint `"$ClusterEndPoint`""
         }
     }
     else {
@@ -83,7 +83,7 @@ elseif($StorageType -eq "AzureBlob")
         {
             $StorageAccountKey = Read-Host -Prompt "Please enter the Storage account key"
         }
-        $command = $command + ".\RetentionScriptAzureShare.ps1 -StorageAccountName `"$StorageAccountName`" -StorageAccountKey `"$StorageAccountKey`" -DateTimeBefore `"$DateTimeBefore`" -ContainerName `"$ContainerName`" -ClusterEndPoint `"$ClusterEndPoint`""    
+        $command = $command + ".\RetentionScriptAzureShare.ps1 -StorageAccountName `"$StorageAccountName`" -StorageAccountKey `"$StorageAccountKey`"  -ContainerName `"$ContainerName`" -ClusterEndPoint `"$ClusterEndPoint`""    
     }
 
     if($ContainerName)
@@ -123,6 +123,10 @@ if($Force)
 
 while(True)
 {
+    $DateTimeBeforeTimeSpan =  [TimeSpan]::Parse($DateTimeBefore)
+    $dateTimeBefore = [DateTime]::UtcNow - $DateTimeBeforeTimeSpan
+    $dateTimeBeforeToPass = $dateTimeBefore.ToUniversalTime().ToString("yyyy-MM-dd HH.mm.ssZ")
+    $command = $command + " -DateTimeBefore `"$dateTimeBeforeToPass`""    
     $timeSpan = [TimeSpan]::Parse($TimeSpanToSchedule)
     Write-Host "Final Command : $command"
     $scriptBlock = [ScriptBlock]::Create($command)
