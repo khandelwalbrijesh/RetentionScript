@@ -40,7 +40,10 @@ param (
     [String] $ApplicationId,
 
     [Parameter(Mandatory=$false)]
-    [String] $SSLCertificateThumbPrint
+    [String] $SSLCertificateThumbPrint,
+
+    [Parameter(Mandatory=$false)]
+    [String] $TimeSpanToSchedule
 )
 
 $command = ""
@@ -118,6 +121,13 @@ if($Force)
     $command = $command + " -Force"    
 }
 
-Write-Host "Final Command : $command"
-$scriptBlock = [ScriptBlock]::Create($command)
-Invoke-Command $scriptBlock
+while(True)
+{
+    $timeSpan = [TimeSpan]::Parse($TimeSpanToSchedule)
+    Write-Host "Final Command : $command"
+    $scriptBlock = [ScriptBlock]::Create($command)
+    Invoke-Command $scriptBlock
+
+    # Sleep for scheduled time and run the script again.
+    Start-Sleep -s $timeSpan.TotalSeconds
+}
