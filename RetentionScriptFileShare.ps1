@@ -16,7 +16,7 @@ param (
     [String] $ClusterEndpoint,
 
     [Parameter(Mandatory=$false)]
-    [bool] $Force,
+    [switch] $Force,
 
     [Parameter(Mandatory=$false)]
     [String] $PartitionId,
@@ -86,17 +86,17 @@ $Global:ImpersonatedUser = @{}
 
 $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
-if($ApplicationId -ne "")
+if($ApplicationId)
 {
     Write-Host "Trying to find all the partitions in application : $ApplicationId"
     $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
 }
-elseif($ServiceId -ne "")
+elseif($ServiceId)
 {
     Write-Host "Trying to find all the partitions in Service : $ServiceId"
     $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
 } 
-elseif($PartitionId -ne "")
+elseif($PartitionId)
 {
     Write-Host "Trying to find all the partitions in Partition : $PartitionId"
     $partitionIdListToWatch.Add($PartitionId) 
@@ -141,7 +141,7 @@ foreach($partitionid in $partitionDict.Keys)
     {
         continue
     }
-    if($SSLCertificateThumbPrint -ne "")
+    if($SSLCertificateThumbPrint)
     {
         $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
     }
@@ -166,7 +166,7 @@ foreach($partitionid in $partitionDict.Keys)
                 Write-Host "Deleting the file: $filePath"
                 Remove-Item -Path $filePath
                 $partitionCountDict[$partitionid] = $partitionCountDict[$partitionid] -1
-                if($partitionCountDict[$partitionid] -eq 0)
+                if($partitionCountDict[$partitionid] -lt 0)
                 {
                     throw "There is some code bug here."
                 }

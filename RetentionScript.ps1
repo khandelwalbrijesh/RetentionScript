@@ -45,46 +45,25 @@ param (
     [Parameter(Mandatory=$false)]
     [String] $SSLCertificateThumbPrint
 )
-if(!$PartitionId)
-{
-    Write-Host "Partition not given"
-    $PartitionId = $null
-}
-if(!$ApplicationId)
-{
-    Write-Host "Application not given"
-    $ApplicationId = $null
-}
-if(!$ServiceId)
-{
-    Write-Host "Service not given"
-    $ServiceId = $null
-}
 
-if(!$SSLCertificateThumbPrint)
-{
-    Write-Host "SSLThumbprint not given"
-    $SSLCertificateThumbPrint = $null
-}
-
-
+$command = ""
 if($StorageType -eq "FileShare")
 {
   if(!$FileSharePath)
   {
-    throw "Please specify file share path and then, run the script"
+    $FileSharePath = Read-Host -Prompt "Please enter the FileSharePath"
   }
 
   if($UserName)
   {
       if(!$Password)
       {
-          throw "If username is specified then, password should also be specified"
+          $Password = Read-Host -Prompt "Please enter password for the userName: $UserName"
       } 
-      .\RetentionScriptFileShare.ps1 -UserName $UserName -FileSharePath $FileSharePath -Password $Password -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+      $command = $command +  ".\RetentionScriptFileShare.ps1 -UserName `"$UserName`" -FileSharePath `"$FileSharePath`" -Password `"$Password`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
   }
   else {
-    .\RetentionScriptFileShare.ps1 -FileSharePath $FileSharePath -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    $command = $command +  ".\RetentionScriptFileShare.ps1 -FileSharePath `"$FileSharePath`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
   }
 }
 elseif($StorageType -eq "AzureBlob")
@@ -93,31 +72,59 @@ elseif($StorageType -eq "AzureBlob")
     {
         if($ContainerName)
         {
-            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -DateTimeBefore $DateTimeBefore -ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+            $command = $command + ".\RetentionScriptAzureShare.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
         }
         else {
-            .\RetentionScriptAzureShare.ps1 -ConnectionString $ConnectionString -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+            $command = $command + ".\RetentionScriptAzureShare.ps1 -ConnectionString `"$ConnectionString`" -DateTimeBefore `"$DateTimeBefore`" -ClusterEndPoint `"$ClusterEndPoint`""
         }
     }
     else {
         if(!$StorageAccountName)
         {
-            throw "StorageAccountName must be specified to connect to the AzureBlobStore"
+            $StorageAccountName = Read-Host -Prompt "Please enter the Storage account name"
         }
         if(!$StorageAccountKey)
         {
-            throw "StorageAccountKey must be specified to connect to the AzureBlobStore"
+            $StorageAccountKey = Read-Host -Prompt "Please enter the Storage account key"
         }
+        $command = $command + ".\RetentionScriptAzureShare.ps1 -StorageAccountName `"$StorageAccountName`" -StorageAccountKey `"$StorageAccountKey`" -DateTimeBefore `"$DateTimeBefore`" -ContainerName `"$ContainerName`" -ClusterEndPoint `"$ClusterEndPoint`""    
+    }
 
-        if($ContainerName)
-        {
-            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -DateTimeBefore $DateTimeBefore -ContainerName $ContainerName $ContainerName -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId -ApplicationId $ApplicationId -SSLCertificateThumbPrint $SSLCertificateThumbPrint
-        }
-        else {
-            .\RetentionScriptAzureShare.ps1 -StorageAccountName $StorageAccountName -StorageAccountKey $StorageAccountKey -DateTimeBefore $DateTimeBefore -ClusterEndPoint $ClusterEndPoint -Force $Force -PartitionId $PartitionId -ServiceId $ServiceId  -ApplicationId $ApplicationId -SSLCertificateThumbPrint $SSLCertificateThumbPrint
-        }        
+    if($ContainerName)
+    {
+        $command = $command + " -ContainerName `"$ContainerName`""
     }
 }
 else {
     throw "The storage of type $StorageType not supported"
 }
+
+if($ApplicationId)
+{
+    Write-Host "ApplicationId is given."
+    $command = $command + " -ApplicationId `"$ApplicationId`""
+}
+if($ServiceId)
+{
+    $command = $command + " -ServiceId `"$ServiceId`""
+    Write-Host "Service is given"
+}
+
+if($SSLCertificateThumbPrint)
+{
+    $command = $command + " -SSLCertificateThumbPrint `"$SSLCertificateThumbPrint`""
+}
+
+if($PartitionId)
+{
+    $command = $command + " -PartitionId `"$PartitionId`""
+}
+
+if($Force)
+{
+    $command = $command + " -Force"    
+}
+
+Write-Host "Final Command : $command"
+$scriptBlock = [ScriptBlock]::Create($command)
+Invoke-Command $scriptBlock

@@ -19,7 +19,7 @@ param (
     [String] $ClusterEndpoint,
 
     [Parameter(Mandatory=$false)]
-    [bool] $Force,
+    [switch] $Force,
 
     [Parameter(Mandatory=$false)]
     [String] $PartitionId,
@@ -37,17 +37,17 @@ param (
 
 $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
-if($ApplicationId -ne "")
+if($ApplicationId)
 {
     Write-Host "Trying to find all the partitions in application : $ApplicationId"
     $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
 }
-elseif($ServiceId -ne "")
+elseif($ServiceId)
 {
     Write-Host "Trying to find all the partitions in Service : $ServiceId"
     $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
 } 
-elseif($PartitionId -ne "")
+elseif($PartitionId)
 {
     Write-Host "Trying to find all the partitions in Partition : $PartitionId"
     $partitionIdListToWatch.Add($PartitionId) 
@@ -108,7 +108,13 @@ foreach($containerName in $containerNameList)
             Write-Host "Continuing for this $partitionid"
             continue
         }
-        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        if($SSLCertificateThumbPrint)
+        {
+            $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        }
+        else {
+            $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force
+        }
         if($finalDateTimeObject -eq [DateTime]::MinValue)
         {
             continue

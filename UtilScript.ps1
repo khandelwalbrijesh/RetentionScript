@@ -64,7 +64,7 @@ Function Get-FinalDateTimeBefore
     $backupEnumerations = $null
     try {
         Write-Host "Querying the URL: $url"
-        if($SSLCertificateThumbPrint -ne "")
+        if($SSLCertificateThumbPrint)
         {
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
         }
@@ -80,9 +80,9 @@ Function Get-FinalDateTimeBefore
         if($err.Error.Code -eq "FABRIC_E_PARTITION_NOT_FOUND")
         {
             Write-Host "$Partitionid is not found." 
-            if($Force)
+            if($Force -eq $true)
             {
-                Write-Host "Force flag is enabled so, deleting data in this partition"
+                Write-Host "Force flag is enabled so, deleting data all in this partition"
                 return [DateTime]::MaxValue
             }
             else {
@@ -211,7 +211,7 @@ Function Start-BackupDataCorruptionTest
     $backupEnumerations = $null
     try {
         Write-Host "Querying the URL: $url"
-        if($SSLCertificateThumbPrint -ne "")
+        if($SSLCertificateThumbPrint)
         {
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
         }
