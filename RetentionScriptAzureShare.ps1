@@ -39,17 +39,17 @@ $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
 if($ApplicationId)
 {
-    Write-Host "Trying to find all the partitions in application : $ApplicationId"
+    Write-Host "Finding all the partitions in application : $ApplicationId to filter them for clean up."
     $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
 }
 elseif($ServiceId)
 {
-    Write-Host "Trying to find all the partitions in Service : $ServiceId"
+    Write-Host "Finding all the partitions in Service : $ServiceId to filter them for clean up."
     $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
 } 
 elseif($PartitionId)
 {
-    Write-Host "Trying to find all the partitions in Partition : $PartitionId"
+    Write-Host "Cleaning up the storage for this $PartitionId partition only."
     $partitionIdListToWatch.Add($PartitionId) 
 }
 
@@ -68,7 +68,6 @@ $containerNameList = New-Object System.Collections.ArrayList
 
 if(!$ContainerName.IsPresent)
 {
-    # Throw exception here.
     $containers = Get-AzureStorageContainer -Context $contextForStorageAccount
     foreach($container in $containers)
     {
@@ -105,7 +104,7 @@ foreach($containerName in $containerNameList)
         $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Count
         if($partitionIdListToWatch.Count -ne 0 -and !$partitionIdListToWatch.Contains($partitionid))
         {
-            Write-Host "Continuing for this $partitionid"
+            Write-Host "Skipping the $partitionid."
             continue
         }
         if($SSLCertificateThumbPrint)
@@ -120,9 +119,10 @@ foreach($containerName in $containerNameList)
             continue
         }
         Write-Host $finalDateTimeObject
+        $deleteCount = 0
         foreach($blobPath in $partitionDict[$partitionid])
         {
-            Write-Host "Processing the file: " $blobPath
+            Write-Host "Processing the file: $blobPath"
             $fileNameWithExtension = Split-Path $blobPath -Leaf
             $fileNameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($fileNameWithExtension)
             $extension = [IO.Path]::GetExtension($fileNameWithExtension)
@@ -135,14 +135,17 @@ foreach($containerName in $containerNameList)
                     Write-Host "Deleting the file: $blobPath"
                     Remove-AzureStorageBlob -Blob $blobPath -Container $containerName -Context $contextForStorageAccount
                     $partitionCountDict[$partitionid] = $partitionCountDict[$partitionid] -1
+                    $deleteCount = $deleteCount + 1 
                     if($partitionCountDict[$partitionid] -eq 0)
                     {
-                        throw "There is some code bug here."
+                        Write-Warning -Message "The backup count in this $partitionid is zero. It could happen if the partition is not found on the $ClusterEndpoint"
                     }
                 }
             }
         }
         Write-Host "Cleanup for the partitionID: $partitionid is complete "
+        Write-Host "The number of backup left in the partition after cleanup: $partitionCountDict[$partitionid]"
+        Write-Host "The number of backup files deleted : $deleteCount (.bkmetadata + .zip files)"
     }
 }
 

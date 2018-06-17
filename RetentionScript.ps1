@@ -118,6 +118,6 @@ if($Force)
     $command = $command + " -Force"    
 }
 
-Write-Host "Final Command : $command"
+Write-Host "Final Command to be executed : $command"
 $scriptBlock = [ScriptBlock]::Create($command)
 Invoke-Command $scriptBlock

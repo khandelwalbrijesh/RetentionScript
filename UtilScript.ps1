@@ -69,10 +69,9 @@ Function Get-FinalDateTimeBefore
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
         }
         else {
-            Write-Host "Trying to query without cert thumbprint"
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url            
         }
-        Write-Host "Trying to find sorted list of backupEnumerations from paged object."
+        Write-Host "Sorting the list of backupEnumerations with respect to creationTimeUtc."
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $false}
     }
     catch  {
@@ -112,7 +111,7 @@ Function Get-FinalDateTimeBefore
     }
     if($backupEnumerations.Count -eq 0)
     {
-        Write-Host "The BackupEnumerations had length equal to 0. So, not deleting anything."
+        Write-Host "The BackupEnumerations had length equal to 0. So, could not go through with the cleanup for this partition: $Partitionid"
         return [DateTime]::MinValue
     }
 
@@ -142,10 +141,9 @@ Function Get-PartitionIdList
 
     $partitionIdList = New-Object System.Collections.ArrayList
 
-    Write-Host "Finding partitionID list"
     foreach($serviceId in $serviceIdList)
     {
-        Write-Host "$serviceId"
+        Write-Host " Service Id found: $serviceId"
         $continuationToken = $null
         do
         {
@@ -160,7 +158,7 @@ Function Get-PartitionIdList
         }while($continuationToken -ne "")
     }
     $length = $partitionIdList.Count
-    Write-Host "the total number of partitions found are $length"
+    Write-Host "The total number of partitions found are $length"
     return $partitionIdList
 }
 
@@ -171,8 +169,6 @@ Function Get-ServiceIdList
     param([Parameter(Mandatory=$true)][string]$ApplicationId
         )
 
-    Write-Host "Trying to find the service ID list."
-    # need to add continuationToken Logic here.    
     $continuationToken = $null
     $serviceIdList = New-Object System.Collections.ArrayList
     do
@@ -218,7 +214,6 @@ Function Start-BackupDataCorruptionTest
         else {
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url            
         }
-        Write-Host "Trying to find sorted list of backupEnumerations from paged object."
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $true}
         
         if($backupEnumerations -ne $null -and $backupEnumerations[0].BackupType -ne "Full")
@@ -230,7 +225,7 @@ Function Start-BackupDataCorruptionTest
         $err = $_.ToString() | ConvertFrom-Json
         if($err.Error.Code -eq "FABRIC_E_PARTITION_NOT_FOUND")
         {
-            Write-Host "Partition not found, so, leaving the partition as it is."
+            Write-Host "Partition not found, so, could not go through with testing the integrity of data of this partition."
         }
         else {
             throw $_.Exception.Message
