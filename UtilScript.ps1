@@ -66,10 +66,11 @@ Function Get-FinalDateTimeBefore
         Write-Host "Querying the URL: $url"
         if($SSLCertificateThumbPrint)
         {
-            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
+            $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get -CertificateThumbprint $SSLCertificateThumbPrint
         }
-        else {
-            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url            
+        else {  
+            Write-Host "Trying to query without cert thumbprint"
+            $pagedBackupEnumeration = Invoke-WebRequest -Method Get -Uri $url       
         }
         Write-Host "Sorting the list of backupEnumerations with respect to creationTimeUtc."
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $false}
@@ -209,10 +210,10 @@ Function Start-BackupDataCorruptionTest
         Write-Host "Querying the URL: $url"
         if($SSLCertificateThumbPrint)
         {
-            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint $SSLCertificateThumbPrint
+            $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get -CertificateThumbprint  $SSLCertificateThumbPrint
         }
         else {
-            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url            
+            $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get
         }
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $true}
         
