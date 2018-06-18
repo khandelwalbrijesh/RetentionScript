@@ -234,12 +234,14 @@ Function Start-BackupDataCorruptionTest
     
     $backupEnumerations = $null
     try {
-        Write-Host "Querying the URL: $url"
         if($SSLCertificateThumbPrint)
         {
+            $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
+            Write-Host "Querying the URL: $url"
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint  $SSLCertificateThumbPrint
         }
         else {
+            Write-Host "Querying the URL: $url"
             $pagedBackupEnumeration = Invoke-RestMethod -Uri $url 
         }
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $true}
