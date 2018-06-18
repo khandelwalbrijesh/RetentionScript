@@ -67,11 +67,13 @@ Function Get-FinalDateTimeBefore
         if($SSLCertificateThumbPrint)
         {
             $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
-            $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get -CertificateThumbprint $SSLCertificateThumbPrint
+            Write-Host "Querying the URL: $url"    
+            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url  -CertificateThumbprint $SSLCertificateThumbPrint
         }
         else {  
             Write-Host "Trying to query without cert thumbprint"
-            $pagedBackupEnumeration = Invoke-WebRequest -Method Get -Uri $url       
+            Write-Host "Querying the URL: $url"
+            $pagedBackupEnumeration = Invoke-RestMethod  -Uri $url       
         }
         Write-Host "Sorting the list of backupEnumerations with respect to creationTimeUtc."
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $false}
@@ -159,11 +161,11 @@ Function Get-PartitionIdList
         {
             if($SSLCertificateThumbPrint)
             {
-                $partitionInfoList = Invoke-WebRequest -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken" -Method Get -CertificateThumbprint $SSLCertificateThumbPrint
+                $partitionInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken"  -CertificateThumbprint $SSLCertificateThumbPrint
             }
             else {  
                 Write-Host "Trying to query without cert thumbprint"
-                $partitionInfoList = Invoke-WebRequest -Uri "http://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken" -Method Get
+                $partitionInfoList = Invoke-RestMethod -Uri "http://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken" 
             }
             foreach($partitionInfo in $partitionInfoList.Items)
             {
@@ -194,11 +196,11 @@ Function Get-ServiceIdList
     {
         if($SSLCertificateThumbPrint)
         {
-            $serviceInfoList = Invoke-RestMethod "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken" -CertificateThumbprint $SSLCertificateThumbPrint
+            $serviceInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken" -CertificateThumbprint $SSLCertificateThumbPrint
         }
         else {  
             Write-Host "Trying to query without cert thumbprint"
-            $serviceInfoList = Invoke-RestMethod "http://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken"
+            $serviceInfoList = Invoke-RestMethod -Uri "http://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken"
         }
         foreach($serviceInfo in $serviceInfoList.Items)
         {
@@ -235,10 +237,10 @@ Function Start-BackupDataCorruptionTest
         Write-Host "Querying the URL: $url"
         if($SSLCertificateThumbPrint)
         {
-            $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get -CertificateThumbprint  $SSLCertificateThumbPrint
+            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint  $SSLCertificateThumbPrint
         }
         else {
-            $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get
+            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url 
         }
         $backupEnumerations = $pagedBackupEnumeration.Items | Sort-Object -Property @{Expression = {[DateTime]::ParseExact($_.CreationTimeUtc,"yyyy-MM-ddTHH:mm:ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)}; Ascending = $true}
         
