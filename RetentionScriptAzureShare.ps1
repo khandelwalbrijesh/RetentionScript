@@ -40,12 +40,24 @@ $partitionIdListToWatch = New-Object System.Collections.ArrayList
 if($ApplicationId)
 {
     Write-Host "Finding all the partitions in application : $ApplicationId to filter them for clean up."
-    $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId
+    if($SSLCertificateThumbPrint)
+    {
+        $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    }
+    else {
+        $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint
+    }
 }
 elseif($ServiceId)
 {
     Write-Host "Finding all the partitions in Service : $ServiceId to filter them for clean up."
-    $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId
+    if($SSLCertificateThumbPrint)
+    {
+        $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    }
+    else {
+        $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint
+    }
 } 
 elseif($PartitionId)
 {

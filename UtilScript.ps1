@@ -66,6 +66,7 @@ Function Get-FinalDateTimeBefore
         Write-Host "Querying the URL: $url"
         if($SSLCertificateThumbPrint)
         {
+            $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
             $pagedBackupEnumeration = Invoke-WebRequest -Uri $url -Method Get -CertificateThumbprint $SSLCertificateThumbPrint
         }
         else {  
@@ -128,13 +129,21 @@ Function Get-PartitionIdList
 {   
     [CmdletBinding(PositionalBinding = $false)]
     param([Parameter(Mandatory=$false)][string]$ApplicationId, 
-    [Parameter(Mandatory=$false)][string]$ServiceId
+    [Parameter(Mandatory=$false)][string]$ServiceId,
+    [Parameter(Mandatory=$true)][string]$ClusterEndpoint,    
+    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
     ) 
     # need to add continuationToken Logic here.
     $serviceIdList = New-Object System.Collections.ArrayList
     if($ApplicationId)
     {
-        $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId   
+        if($SSLCertificateThumbPrint)
+        {
+            $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        }
+        else {
+            $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint
+        }
     }
     else {
         $serviceIdList.Add($ServiceId) | Out-Null
@@ -148,7 +157,14 @@ Function Get-PartitionIdList
         $continuationToken = $null
         do
         {
-            $partitionInfoList = Invoke-RestMethod "http://localhost:19080/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken"
+            if($SSLCertificateThumbPrint)
+            {
+                $partitionInfoList = Invoke-WebRequest -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken" -Method Get -CertificateThumbprint $SSLCertificateThumbPrint
+            }
+            else {  
+                Write-Host "Trying to query without cert thumbprint"
+                $partitionInfoList = Invoke-WebRequest -Uri "http://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken" -Method Get
+            }
             foreach($partitionInfo in $partitionInfoList.Items)
             {
                 $partitionid = $partitionInfo.PartitionInformation.Id
@@ -167,14 +183,23 @@ Function Get-PartitionIdList
 Function Get-ServiceIdList 
 {   
     [CmdletBinding(PositionalBinding = $false)]
-    param([Parameter(Mandatory=$true)][string]$ApplicationId
+    param([Parameter(Mandatory=$true)][string]$ApplicationId,
+    [Parameter(Mandatory=$true)][string]$ClusterEndpoint,    
+    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
         )
 
     $continuationToken = $null
     $serviceIdList = New-Object System.Collections.ArrayList
     do
     {
-        $serviceInfoList = Invoke-RestMethod "http://localhost:19080/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken"
+        if($SSLCertificateThumbPrint)
+        {
+            $serviceInfoList = Invoke-RestMethod "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken" -CertificateThumbprint $SSLCertificateThumbPrint
+        }
+        else {  
+            Write-Host "Trying to query without cert thumbprint"
+            $serviceInfoList = Invoke-RestMethod "http://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken"
+        }
         foreach($serviceInfo in $serviceInfoList.Items)
         {
             $serviceIdList.Add($serviceInfo.Id) | Out-Null
