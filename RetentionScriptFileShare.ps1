@@ -189,8 +189,9 @@ foreach($partitionid in $partitionDict.Keys)
             }
         }
     }
+    $numberOfBackupsLeft = $partitionCountDict[$partitionid]
     Write-Host "Cleanup for the partitionID: $partitionid is complete "
-    Write-Host "The number of backup left in the partition after cleanup: $partitionCountDict[$partitionid]"
+    Write-Host "The number of backup left in the partition after cleanup: $numberOfBackupsLeft"
     Write-Host "The number of backup files deleted : $deleteCount (.bkmetadata + .zip files)"
 }
 
