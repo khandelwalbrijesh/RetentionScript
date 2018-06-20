@@ -1,3 +1,64 @@
+<#
+ .SYNOPSIS
+    This powershell module deletes backups from the azure storage.
+
+ .PARAMETER UserName
+    UserName associated with file share.
+
+ .PARAMETER FileSharePath
+    The file share path of the storage configured for backup.
+
+ .PARAMETER StorageType
+    It could be one of the two storages supported:
+    1. AzureBlob
+    2. FileShare
+
+ .PARAMETER DateTimeBefore(Required)
+    It is the date time value for deleting the backups before that time. It should be provided in the format(yyyy-MM-dd HH.mm.ssZ)
+    Example: 
+    $DateTimeBefore = [DateTime]::Now.ToString("yyyy-MM-dd HH.mm.ssZ")
+
+ .PARAMETER ConnectionString
+    Connection string to the azure storage configured for backup.
+
+ .PARAMETER ContainerName(Optional)
+    Container name of storage in which backups are stored.
+
+ .PARAMETER StorageAccountName
+    Azure storage account name
+    
+ .PARAMETER StorageAccountKey
+    Azure storage account key
+
+ .PARAMETER ClusterEndPoint(Required)
+    It is the management end point of the cluster.
+    example:
+    ManagementEndpoint : https://clustername.centralus.cloudapp.azure.com:19080
+    $ClusterEndPoint : clustername.centralus.cloudapp.azure.com:19080
+
+ .PARAMETER DeleteNotFoundPartitions(Optional)
+    If there are partitions on the storage which are not found on the cluster, and you want to delete complete data in the partition
+    then, enable the flag and run the script.
+    
+ .PARAMETER PartitionId(Optional)
+    Filter to delete data for a particular partition on the cluster
+        
+ .PARAMETER ApplicationId
+    Filter to delete data for a particular Application on the cluster
+    Example:
+    if ApplicationName(without fabric:) is  "application/Name" then,
+    $ApplicationId = "application~Name"(Replace "/" with "~")
+        
+ .PARAMETER ServiceId
+    Filter to delete data for a particular service on the cluster
+    Example:
+    if ServiceName(without fabric:) is  "Service/Name" then,
+    $ServiceId = "Service~Name"(Replace "/" with "~")
+        
+ .PARAMETER ClientCertificateThumbprint(Required in case of secured cluster)
+    Thumbprint of the client certificate
+#>
+
 [CmdletBinding(PositionalBinding = $false)]
 param (
     [Parameter(Mandatory=$false)]
