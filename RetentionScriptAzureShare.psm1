@@ -40,7 +40,6 @@ $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
 if($ApplicationId)
 {
-    Write-Host "Finding all the partitions in application : $ApplicationId to filter them for clean up."
     if($ClientCertificateThumbprint)
     {
         $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
@@ -51,7 +50,6 @@ if($ApplicationId)
 }
 elseif($ServiceId)
 {
-    Write-Host "Finding all the partitions in Service : $ServiceId to filter them for clean up."
     if($ClientCertificateThumbprint)
     {
         $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
@@ -62,7 +60,6 @@ elseif($ServiceId)
 } 
 elseif($PartitionId)
 {
-    Write-Host "Cleaning up the storage for this $PartitionId partition only."
     $partitionIdListToWatch.Add($PartitionId) 
 }
 
@@ -117,7 +114,6 @@ foreach($containerName in $containerNameList)
         $partitionCountDict[$partitionid] = $partitionDict[$partitionid].Count
         if($partitionIdListToWatch.Count -ne 0 -and !$partitionIdListToWatch.Contains($partitionid))
         {
-            Write-Host "Skipping the $partitionid."
             continue
         }
         if($ClientCertificateThumbprint)
@@ -131,15 +127,12 @@ foreach($containerName in $containerNameList)
         {
             continue
         }
-        Write-Host $finalDateTimeObject
         $deleteCount = 0
         foreach($blobPath in $partitionDict[$partitionid])
         {
-            Write-Host "Processing the file: $blobPath"
             $fileNameWithExtension = Split-Path $blobPath -Leaf
             $fileNameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($fileNameWithExtension)
             $extension = [IO.Path]::GetExtension($fileNameWithExtension)
-            # now make the query
             if($extension -eq ".zip" -or $extension -eq ".bkmetadata" )
             {
                 $dateTimeObject = [DateTime]::ParseExact($fileNameWithoutExtension + "Z","yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
@@ -163,7 +156,6 @@ foreach($containerName in $containerNameList)
     }
 }
 
-Write-Host "Now testing the cleanup."
 
 $newPathsList = New-Object System.Collections.ArrayList
 $newToken = $null  

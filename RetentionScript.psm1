@@ -96,13 +96,11 @@ else {
 
 if($ApplicationId)
 {
-    Write-Host "ApplicationId is given."
     $command = $command + " -ApplicationId `"$ApplicationId`""
 }
 if($ServiceId)
 {
     $command = $command + " -ServiceId `"$ServiceId`""
-    Write-Host "Service is given"
 }
 
 if($ClientCertificateThumbprint)
@@ -120,7 +118,6 @@ if($DeleteNotFoundPartitions)
     $command = $command + " -DeleteNotFoundPartitions"    
 }
 
-Write-Host "Final Command to be executed : $command"
 $scriptBlock = [ScriptBlock]::Create($command)
 Invoke-Command $scriptBlock
 }

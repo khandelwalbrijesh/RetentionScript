@@ -90,7 +90,6 @@ $partitionIdListToWatch = New-Object System.Collections.ArrayList
 
 if($ApplicationId)
 {
-    Write-Host "Finding all the partitions in application : $ApplicationId to filter them for clean up."
     if($ClientCertificateThumbprint)
     {
         $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
@@ -101,7 +100,6 @@ if($ApplicationId)
 }
 elseif($ServiceId)
 {
-    Write-Host "Finding all the partitions in Service : $ServiceId to filter them for clean up."
     if($ClientCertificateThumbprint)
     {
         $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
@@ -112,7 +110,6 @@ elseif($ServiceId)
 } 
 elseif($PartitionId)
 {
-    Write-Host "Cleaning up the storage for this $PartitionId partition only."
     $partitionIdListToWatch.Add($PartitionId) 
 }
 
@@ -140,9 +137,7 @@ if($UserName)
     
 }
 
-Write-Host "Enumerating the Share : $FileSharePath"
 
-# Here i will perform the impersonation task and make it proper.
 Get-ChildItem -Path $FileSharePath -Include *.bkmetadata -Recurse | ForEach-Object {$filePathList.Add($_.FullName) | Out-Null} 
 Get-ChildItem -Path $FileSharePath -Include *.zip -Recurse | ForEach-Object {$filePathList.Add($_.FullName) | Out-Null} 
 
@@ -170,7 +165,6 @@ foreach($partitionid in $partitionDict.Keys)
     $deleteCount = 0    
     foreach($filePath in $partitionDict[$partitionid])
     {
-        Write-Host "Processing the file: " $filePath
         $fileNameWithExtension = Split-Path $filePath -Leaf
         $fileNameWithoutExtension = [System.IO.Path]::GetFileNameWithoutExtension($fileNameWithExtension)
         $extension =  [IO.Path]::GetExtension($fileNameWithExtension)
@@ -197,8 +191,6 @@ foreach($partitionid in $partitionDict.Keys)
 }
 
 
-Write-Host "Now testing the cleanup."
-# Here our test code will work.
 $testFilePathList = New-Object System.Collections.ArrayList
 
 Get-ChildItem -Path $FileSharePath -Include *.bkmetadata -Recurse | ForEach-Object {$testFilePathList.Add($_.FullName) | Out-Null} 
@@ -222,10 +214,7 @@ foreach($partitionid in $newPartitionDict.Keys)
 if($UserName)
 {   
     $ImpersonatedUser.ImpersonationContext.Undo() 
-    
-    #Clean up the Global variable and the function itself. 
     Remove-Variable ImpersonatedUser -Scope Global 
 }
 
-# Now we will go for enumeration
 }
