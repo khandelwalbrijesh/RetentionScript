@@ -16,7 +16,7 @@ param (
     [String] $ClusterEndpoint,
 
     [Parameter(Mandatory=$false)]
-    [switch] $Force,
+    [switch] $DeleteNotFoundPartitions,
 
     [Parameter(Mandatory=$false)]
     [String] $PartitionId,
@@ -28,7 +28,7 @@ param (
     [String] $ApplicationId,
 
     [Parameter(Mandatory=$false)]
-    [String] $SSLCertificateThumbPrint
+    [String] $ClientCertificateThumbprint
 )
 
 
@@ -90,9 +90,9 @@ $partitionIdListToWatch = New-Object System.Collections.ArrayList
 if($ApplicationId)
 {
     Write-Host "Finding all the partitions in application : $ApplicationId to filter them for clean up."
-    if($SSLCertificateThumbPrint)
+    if($ClientCertificateThumbprint)
     {
-        $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
     }
     else {
         $partitionIdListToWatch = Get-PartitionIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint
@@ -101,9 +101,9 @@ if($ApplicationId)
 elseif($ServiceId)
 {
     Write-Host "Finding all the partitions in Service : $ServiceId to filter them for clean up."
-    if($SSLCertificateThumbPrint)
+    if($ClientCertificateThumbprint)
     {
-        $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
     }
     else {
         $partitionIdListToWatch = Get-PartitionIdList -ServiceId $ServiceId -ClusterEndpoint $ClusterEndpoint
@@ -155,12 +155,12 @@ foreach($partitionid in $partitionDict.Keys)
     {
         continue
     }
-    if($SSLCertificateThumbPrint)
+    if($ClientCertificateThumbprint)
     {
-        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -DeleteNotFoundPartitions $DeleteNotFoundPartitions -ClientCertificateThumbprint $ClientCertificateThumbprint
     }
     else {
-        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -Force $Force        
+        $finalDateTimeObject = Get-FinalDateTimeBefore -DateTimeBefore $DateTimeBefore -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -DeleteNotFoundPartitions $DeleteNotFoundPartitions        
     }
     if($finalDateTimeObject -eq [DateTime]::MinValue)
     {
@@ -213,7 +213,7 @@ foreach($partitionid in $newPartitionDict.Keys)
             throw "The partition with partitionId : $partitionid has less number of backups than expected."
         }
     }
-    Start-BackupDataCorruptionTest -DateTimeBefore $DateTimeBefore  -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+    Start-BackupDataCorruptionTest -DateTimeBefore $DateTimeBefore  -Partitionid $partitionid -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
 }
 
 

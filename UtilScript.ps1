@@ -52,8 +52,8 @@ Function Get-FinalDateTimeBefore
     param([Parameter(Mandatory=$true)][string]$DateTimeBefore, 
     [Parameter(Mandatory=$true)][string]$Partitionid, 
     [Parameter(Mandatory=$true)][string]$ClusterEndpoint,
-    [Parameter(Mandatory=$false)][bool]$Force,
-    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
+    [Parameter(Mandatory=$false)][bool]$DeleteNotFoundPartitions,
+    [Parameter(Mandatory=$false)][string]$ClientCertificateThumbprint
     )  
 
     # DateTime Improvement to be done here.
@@ -64,11 +64,11 @@ Function Get-FinalDateTimeBefore
     $backupEnumerations = $null
     try {
         Write-Host "Querying the URL: $url"
-        if($SSLCertificateThumbPrint)
+        if($ClientCertificateThumbprint)
         {
             $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
             Write-Host "Querying the URL: $url"    
-            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url  -CertificateThumbprint $SSLCertificateThumbPrint
+            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url  -CertificateThumbprint $ClientCertificateThumbprint
         }
         else {  
             Write-Host "Trying to query without cert thumbprint"
@@ -83,9 +83,9 @@ Function Get-FinalDateTimeBefore
         if($err.Error.Code -eq "FABRIC_E_PARTITION_NOT_FOUND")
         {
             Write-Host "$Partitionid is not found." 
-            if($Force -eq $true)
+            if($DeleteNotFoundPartitions -eq $true)
             {
-                Write-Host "Force flag is enabled so, deleting data all in this partition"
+                Write-Host "DeleteNotFoundPartitions flag is enabled so, deleting data all in this partition"
                 return [DateTime]::MaxValue
             }
             else {
@@ -133,15 +133,15 @@ Function Get-PartitionIdList
     param([Parameter(Mandatory=$false)][string]$ApplicationId, 
     [Parameter(Mandatory=$false)][string]$ServiceId,
     [Parameter(Mandatory=$true)][string]$ClusterEndpoint,    
-    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
+    [Parameter(Mandatory=$false)][string]$ClientCertificateThumbprint
     ) 
     # need to add continuationToken Logic here.
     $serviceIdList = New-Object System.Collections.ArrayList
     if($ApplicationId)
     {
-        if($SSLCertificateThumbPrint)
+        if($ClientCertificateThumbprint)
         {
-            $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -SSLCertificateThumbPrint $SSLCertificateThumbPrint
+            $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint -ClientCertificateThumbprint $ClientCertificateThumbprint
         }
         else {
             $serviceIdList = Get-ServiceIdList -ApplicationId $ApplicationId -ClusterEndpoint $ClusterEndpoint
@@ -159,9 +159,9 @@ Function Get-PartitionIdList
         $continuationToken = $null
         do
         {
-            if($SSLCertificateThumbPrint)
+            if($ClientCertificateThumbprint)
             {
-                $partitionInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken"  -CertificateThumbprint $SSLCertificateThumbPrint
+                $partitionInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Services/$serviceId/$/GetPartitions?api-version=6.2&ContinuationToken=$continuationToken"  -CertificateThumbprint $ClientCertificateThumbprint
             }
             else {  
                 Write-Host "Trying to query without cert thumbprint"
@@ -187,16 +187,16 @@ Function Get-ServiceIdList
     [CmdletBinding(PositionalBinding = $false)]
     param([Parameter(Mandatory=$true)][string]$ApplicationId,
     [Parameter(Mandatory=$true)][string]$ClusterEndpoint,    
-    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
+    [Parameter(Mandatory=$false)][string]$ClientCertificateThumbprint
         )
 
     $continuationToken = $null
     $serviceIdList = New-Object System.Collections.ArrayList
     do
     {
-        if($SSLCertificateThumbPrint)
+        if($ClientCertificateThumbprint)
         {
-            $serviceInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken" -CertificateThumbprint $SSLCertificateThumbPrint
+            $serviceInfoList = Invoke-RestMethod -Uri "https://$ClusterEndpoint/Applications/$ApplicationId/$/GetServices?api-version=6.2&ContinuationToken=$continuationToken" -CertificateThumbprint $ClientCertificateThumbprint
         }
         else {  
             Write-Host "Trying to query without cert thumbprint"
@@ -223,7 +223,7 @@ Function Start-BackupDataCorruptionTest
     param([Parameter(Mandatory=$true)][string]$DateTimeBefore,
     [Parameter(Mandatory=$true)][string]$Partitionid, 
     [Parameter(Mandatory=$true)][string]$ClusterEndpoint,
-    [Parameter(Mandatory=$false)][string]$SSLCertificateThumbPrint
+    [Parameter(Mandatory=$false)][string]$ClientCertificateThumbprint
     )
     $dateTimeBeforeObject = [DateTime]::ParseExact($DateTimeBefore,"yyyy-MM-dd HH.mm.ssZ",[System.Globalization.DateTimeFormatInfo]::InvariantInfo,[System.Globalization.DateTimeStyles]::None)
     $finalDateTimeObject = $dateTimeBeforeObject
@@ -234,11 +234,11 @@ Function Start-BackupDataCorruptionTest
     
     $backupEnumerations = $null
     try {
-        if($SSLCertificateThumbPrint)
+        if($ClientCertificateThumbprint)
         {
             $url = "https://$ClusterEndpoint/Partitions/$Partitionid/$/GetBackups?api-version=6.2-preview&EndDateTimeFilter=$dateTimeBeforeString"
             Write-Host "Querying the URL: $url"
-            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint  $SSLCertificateThumbPrint
+            $pagedBackupEnumeration = Invoke-RestMethod -Uri $url -CertificateThumbprint  $ClientCertificateThumbprint
         }
         else {
             Write-Host "Querying the URL: $url"

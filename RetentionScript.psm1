@@ -30,7 +30,7 @@ param (
     [String] $ClusterEndPoint,
 
     [Parameter(Mandatory=$false)]
-    [Switch] $Force,
+    [Switch] $DeleteNotFoundPartitions,
 
     [Parameter(Mandatory=$false)]
     [String] $PartitionId,
@@ -42,7 +42,7 @@ param (
     [String] $ApplicationId,
 
     [Parameter(Mandatory=$false)]
-    [String] $SSLCertificateThumbPrint
+    [String] $ClientCertificateThumbprint
 )
 
 $command = ""
@@ -105,9 +105,9 @@ if($ServiceId)
     Write-Host "Service is given"
 }
 
-if($SSLCertificateThumbPrint)
+if($ClientCertificateThumbprint)
 {
-    $command = $command + " -SSLCertificateThumbPrint `"$SSLCertificateThumbPrint`""
+    $command = $command + " -ClientCertificateThumbprint `"$ClientCertificateThumbprint`""
 }
 
 if($PartitionId)
@@ -115,9 +115,9 @@ if($PartitionId)
     $command = $command + " -PartitionId `"$PartitionId`""
 }
 
-if($Force)
+if($DeleteNotFoundPartitions)
 {
-    $command = $command + " -Force"    
+    $command = $command + " -DeleteNotFoundPartitions"    
 }
 
 Write-Host "Final Command to be executed : $command"
