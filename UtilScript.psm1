@@ -35,7 +35,6 @@ Function Get-PartitionDict
         
         if(!$partitionDict.ContainsKey($partitionID))
         {
-            Write-Host "Partition Id extracted is this $partitionID"
             $partitionDict.Add($partitionID, $path)
         }
         else {
@@ -83,7 +82,7 @@ Function Get-FinalDateTimeBefore
                 return [DateTime]::MaxValue
             }
             else {
-                Write-Warning "If you want to remove data on this partition as well, please run the script by enabling force flag."
+                Write-Warning "If you want to remove data on this partition as well, please run the script by enabling DeleteNotFoundPartitions flag."
                 return [DateTime]::MinValue
             }
         }
@@ -104,7 +103,7 @@ Function Get-FinalDateTimeBefore
     }
     if($backupEnumerations.Count -eq 0)
     {
-        Write-Host "The BackupEnumerations had length equal to 0. So, could not go through with the cleanup for this partition: $Partitionid"
+        Write-Host "There are no backups available in the partition: $Partitionid before the specified date."
         return [DateTime]::MinValue
     }
 
@@ -232,7 +231,7 @@ Function Start-BackupDataCorruptionTest
         $err = $_.ToString() | ConvertFrom-Json
         if($err.Error.Code -eq "FABRIC_E_PARTITION_NOT_FOUND")
         {
-            Write-Host "Partition not found, so, could not go through with testing the integrity of data of this partition."
+            Write-Host "Partition: $Partitionid not found, so, could not go through with testing the integrity of data of this partition."
         }
         else {
             throw $_.Exception.Message
