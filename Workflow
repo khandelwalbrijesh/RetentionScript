@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-06-10T14:05:09.676Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" etag="X6pKcIEVVYgiaqn-cXM_" version="14.7.6" type="github">
+<mxfile host="app.diagrams.net" modified="2021-06-10T15:07:53.469Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" etag="M3sfzShXMadEQw2x7YbX" version="14.7.6" type="github">
   <diagram id="hygXtXWIu7UVOGA_iYT_" name="Page-1">
     <mxGraphModel dx="929" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -96,7 +96,7 @@
         <mxCell id="S6dxkTqWbDQwJzv-JpnP-62" value="11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="S6dxkTqWbDQwJzv-JpnP-39" target="S6dxkTqWbDQwJzv-JpnP-41">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="S6dxkTqWbDQwJzv-JpnP-39" value="Extension Operator" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="S6dxkTqWbDQwJzv-JpnP-39" value="TKG(LCM) Operator" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="265" y="530" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="S6dxkTqWbDQwJzv-JpnP-64" value="12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="S6dxkTqWbDQwJzv-JpnP-41" target="S6dxkTqWbDQwJzv-JpnP-46">
@@ -129,7 +129,7 @@
         <mxCell id="S6dxkTqWbDQwJzv-JpnP-65" value="Updates public key" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="140" y="495" width="40" height="20" as="geometry" />
         </mxCell>
-        <mxCell id="S6dxkTqWbDQwJzv-JpnP-66" value="Sends Service Acount Token" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+        <mxCell id="S6dxkTqWbDQwJzv-JpnP-66" value="Sends MI Metadata&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="500" y="550" width="40" height="50" as="geometry" />
         </mxCell>
         <mxCell id="S6dxkTqWbDQwJzv-JpnP-68" value="Uses Service Account Token to Exchange MSI token" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
@@ -143,9 +143,6 @@
         </mxCell>
         <mxCell id="S6dxkTqWbDQwJzv-JpnP-80" value="Shares&lt;br&gt;1. xmsi headers&lt;br&gt;2. Subject and Issuer&lt;br&gt;3. OIDC Url(?)&lt;br&gt;4. Resource Details" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="580" y="160" width="160" height="10" as="geometry" />
-        </mxCell>
-        <mxCell id="S6dxkTqWbDQwJzv-JpnP-81" value="Text" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-          <mxGeometry x="440" y="330" width="40" height="20" as="geometry" />
         </mxCell>
         <mxCell id="S6dxkTqWbDQwJzv-JpnP-82" value="On Prem Datacenter" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="750" y="380" width="100" height="20" as="geometry" />
