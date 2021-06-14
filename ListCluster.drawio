@@ -1,1 +1,49 @@
-<mxfile host="app.diagrams.net" modified="2021-06-14T11:33:06.846Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" version="14.7.7" etag="4VyDfRFlHIA8xPo3vzGp" type="github"><diagram id="XLiSSwNIt-vZ_EiXTGjt">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-06-14T12:11:48.404Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" etag="c6-HLPkOWS60SplCq-1I" version="14.7.7" type="github">
+  <diagram id="XLiSSwNIt-vZ_EiXTGjt" name="Page-1">
+    <mxGraphModel dx="929" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-5" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="suj_S_MQx_Yw8t8QWiso-1" target="suj_S_MQx_Yw8t8QWiso-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-1" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.user;" vertex="1" parent="1">
+          <mxGeometry x="40" y="125" width="47.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="suj_S_MQx_Yw8t8QWiso-4" target="suj_S_MQx_Yw8t8QWiso-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-4" value="ARM" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="120" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-7" value="User RP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="360" width="370" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="suj_S_MQx_Yw8t8QWiso-8" target="suj_S_MQx_Yw8t8QWiso-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-8" value="RPAAS" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="240" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-11" value="Global Notification Service" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="470" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-12" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="suj_S_MQx_Yw8t8QWiso-11" target="suj_S_MQx_Yw8t8QWiso-7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="340" as="sourcePoint" />
+            <mxPoint x="450" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-13" value="Hybrid Connection Details" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="190" y="430" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-16" value="List Credentials POST Call" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="110" width="120" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="suj_S_MQx_Yw8t8QWiso-17" value="Common Nuget Package to get HC Details from GNS" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="380" y="400" width="170" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
