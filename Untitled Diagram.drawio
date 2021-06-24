@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-06-24T04:44:30.158Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="CauJ5HzrsjPBtdR3zF9P" version="14.8.0" type="github">
+<mxfile host="app.diagrams.net" modified="2021-06-24T04:52:15.348Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" etag="wQkj5PvLdXEw9gImL7Ay" version="14.8.0" type="github">
   <diagram id="wFE0QG_FPsp0jaGvCLVb" name="Page-1">
     <mxGraphModel dx="1943" dy="745" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -29,11 +29,8 @@
             <mxPoint x="195.16666666666674" y="500.0000000000001" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="p6YkToFKb5sHR4yI7PBi-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="p6YkToFKb5sHR4yI7PBi-9" target="p6YkToFKb5sHR4yI7PBi-12">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-        <mxCell id="p6YkToFKb5sHR4yI7PBi-9" value="Common Service&amp;nbsp; to Get HC details" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="60" y="367" width="170" height="60" as="geometry" />
+        <mxCell id="p6YkToFKb5sHR4yI7PBi-9" value="Common Service to Get HC details" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="58" y="367" width="170" height="60" as="geometry" />
         </mxCell>
         <mxCell id="p6YkToFKb5sHR4yI7PBi-10" value="Guest Notification Service" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="110" y="505" width="170" height="60" as="geometry" />
@@ -152,6 +149,12 @@
         </mxCell>
         <mxCell id="p6YkToFKb5sHR4yI7PBi-38" value="Sets HC Mapping in DB" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
           <mxGeometry x="260" y="415.5" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="p6YkToFKb5sHR4yI7PBi-44" value="" style="endArrow=classic;startArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="p6YkToFKb5sHR4yI7PBi-9" target="p6YkToFKb5sHR4yI7PBi-12">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="260" y="360" as="sourcePoint" />
+            <mxPoint x="310" y="310" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
