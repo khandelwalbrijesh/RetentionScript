@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-07-30T11:56:16.330Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Safari/537.36" etag="flt9bJki6vDgNUmrs-Wa" version="14.9.2" type="github">
+<mxfile host="app.diagrams.net" modified="2021-08-02T09:34:41.856Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36" etag="zaG0fjw94NAiEz1MmiNZ" version="14.9.3" type="github">
   <diagram id="EU1cBfMbXQIQ6rzQxwds" name="Page-1">
-    <mxGraphModel dx="1779" dy="577" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1779" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,11 +10,11 @@
         <mxCell id="eSh0U1_WUBTaR2EsjFRE-2" value="Arc Onboarded Common K8s&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="205" y="330" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="eSh0U1_WUBTaR2EsjFRE-5" value="1" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" parent="1" source="eSh0U1_WUBTaR2EsjFRE-3" target="eSh0U1_WUBTaR2EsjFRE-2" edge="1">
+        <mxCell id="aqVX_z8jET7fjm6_FcJv-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.167;entryY=1.002;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="eSh0U1_WUBTaR2EsjFRE-3" target="eSh0U1_WUBTaR2EsjFRE-2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eSh0U1_WUBTaR2EsjFRE-3" value="Metadatasync Operator" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="205" y="520" width="120" height="60" as="geometry" />
+        <mxCell id="eSh0U1_WUBTaR2EsjFRE-3" value="Provisioned Cluster Operator" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="325" y="520" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="eSh0U1_WUBTaR2EsjFRE-18" value="2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="eSh0U1_WUBTaR2EsjFRE-4" target="eSh0U1_WUBTaR2EsjFRE-2" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -43,10 +43,10 @@
         <mxCell id="eSh0U1_WUBTaR2EsjFRE-26" value="6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.345;entryY=0.998;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="eSh0U1_WUBTaR2EsjFRE-10" target="eSh0U1_WUBTaR2EsjFRE-25" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="eSh0U1_WUBTaR2EsjFRE-10" value="Connected VMWare RP" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="eSh0U1_WUBTaR2EsjFRE-10" value="K8s Bridge" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="205" y="204" width="125" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="eSh0U1_WUBTaR2EsjFRE-19" value="TKG Workload Cluster" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+        <mxCell id="eSh0U1_WUBTaR2EsjFRE-19" value="Appliance" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="393" y="580" width="64" height="20" as="geometry" />
         </mxCell>
         <mxCell id="eSh0U1_WUBTaR2EsjFRE-25" value="ARM" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
