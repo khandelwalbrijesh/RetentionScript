@@ -1,1 +1,46 @@
-<mxfile host="app.diagrams.net" modified="2021-07-19T19:20:16.872Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36" version="14.8.6" etag="sgBn2PW0XtToMUk3A1Rm" type="github"><diagram id="0yDypCE00KNv0DB515z5">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-08-05T16:21:44.721Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36" etag="7K_AvQuJ-wZ81Aca4HEz" version="14.9.3" type="github">
+  <diagram id="0yDypCE00KNv0DB515z5" name="Page-1">
+    <mxGraphModel dx="929" dy="633" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-5" value="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.84;exitY=0.28;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ODlsJCGl1Rqe9jJ2PEgp-1" target="ODlsJCGl1Rqe9jJ2PEgp-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-1" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.user;" vertex="1" parent="1">
+          <mxGeometry x="140" y="90" width="47.5" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-8" value="2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.446;entryY=0.079;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="ODlsJCGl1Rqe9jJ2PEgp-4" target="ODlsJCGl1Rqe9jJ2PEgp-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-12" value="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=-0.083;entryY=0.72;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="ODlsJCGl1Rqe9jJ2PEgp-4" target="ODlsJCGl1Rqe9jJ2PEgp-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-17" value="4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="ODlsJCGl1Rqe9jJ2PEgp-4" target="ODlsJCGl1Rqe9jJ2PEgp-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-4" value="Connect Service Extension RP" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="230" y="180" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-6" value="Provisioned Cluster RP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="310" width="140" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-7" value="ListUserClusterCredential call" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="10" y="150" width="230" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-9" value="Gets Proxy resource from RP to get Guid related to the RP" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="130" y="230" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-11" value="" style="aspect=fixed;perimeter=ellipsePerimeter;html=1;align=center;shadow=0;dashed=0;spacingTop=3;image;image=img/lib/active_directory/database.svg;" vertex="1" parent="1">
+          <mxGeometry x="510" y="191.5" width="50" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-15" value="Caches the Guid Resource mapping in the DB" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="340" y="240" width="190" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ODlsJCGl1Rqe9jJ2PEgp-16" value="Guest Notification Service" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="340" width="120" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
