@@ -1,1 +1,85 @@
-<mxfile host="app.diagrams.net" modified="2021-06-14T12:13:57.332Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36" version="14.7.7" etag="kRu0QBZ0lKPzD3W0ZoBF" type="github"><diagram id="9WpLtpf1JqHGoahmyFdg">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-04-08T06:02:18.663Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36" etag="UotWDT4ks_otM-0EA2XV" version="15.1.4" type="github">
+  <diagram id="9WpLtpf1JqHGoahmyFdg" name="Page-1">
+    <mxGraphModel dx="929" dy="569" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="optyJocJWKJvdFuJsdZg-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="optyJocJWKJvdFuJsdZg-1" target="optyJocJWKJvdFuJsdZg-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="150" y="250" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-2" value="az hybridaks Proxy" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="180" y="270" width="110" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.01;entryY=0.413;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="optyJocJWKJvdFuJsdZg-5" target="optyJocJWKJvdFuJsdZg-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-5" value="" style="verticalLabelPosition=bottom;html=1;verticalAlign=top;align=center;strokeColor=none;fillColor=#00BEF2;shape=mxgraph.azure.user;" vertex="1" parent="1">
+          <mxGeometry x="30" y="250" width="40" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-8" value="Kubectl Call" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="290" width="60" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-10" value="Microsoft.HybridConnectivity RP" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="140" y="70" width="180" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-11" value="" style="endArrow=classic;startArrow=classic;html=1;entryX=0.449;entryY=0.993;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.408;exitY=0.001;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="optyJocJWKJvdFuJsdZg-1" target="optyJocJWKJvdFuJsdZg-10">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="330" y="300" as="sourcePoint" />
+            <mxPoint x="380" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-12" value="Microsoft.HybridConnectivity/endpoints/listingresscredentals" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="170" width="210" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="optyJocJWKJvdFuJsdZg-13" target="optyJocJWKJvdFuJsdZg-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-13" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.infographic.cylinder;fillColor=#10739E;strokeColor=none;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="375" y="260" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-14" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="390" as="sourcePoint" />
+            <mxPoint x="430" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-16" value="Hybrid Connection" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="337.5" y="330" width="95" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="optyJocJWKJvdFuJsdZg-18" target="optyJocJWKJvdFuJsdZg-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-18" value="Cluster Connect Agent" style="rounded=0;whiteSpace=wrap;html=1;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="555" y="235" width="85" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="optyJocJWKJvdFuJsdZg-19" target="optyJocJWKJvdFuJsdZg-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-19" value="Kube-AAD-Proxy" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="242.5" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-20" value="API Server" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="340" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-30" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="450" width="320" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-32" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="230" y="480" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-33" value="Client Side Proxy" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="490" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-35" value="CSP Wrapper Python Package" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="237.5" y="505" width="100" height="10" as="geometry" />
+        </mxCell>
+        <mxCell id="optyJocJWKJvdFuJsdZg-36" value="az cli proxy command" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="210" y="450" width="300" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
