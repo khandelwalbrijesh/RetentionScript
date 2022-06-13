@@ -1,1 +1,96 @@
-<mxfile host="app.diagrams.net" modified="2022-06-13T06:16:33.908Z" agent="5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36" version="17.4.1" etag="zoUrbx-nnkDp3K16xEE9" type="github"><diagram id="Pai8ok9RmJks06JW81sK">UzV2zq1wL0osyPDNT0nNUTV2VTV2LsrPL4GwciucU3NyVI0MMlNUjV1UjYwMgFjVyA2HrCFY1qAgsSg1rwSLBiADYTaQg2Y1AA==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2022-06-13T06:43:25.113Z" agent="5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36" etag="LtbCutWUxz4A0mA3KM4m" version="17.4.1" type="github">
+  <diagram id="Pai8ok9RmJks06JW81sK" name="Page-1">
+    <mxGraphModel dx="885" dy="541" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TRVSji0SfKdkGA1JncBO-2" value="HybridAKS Clusters" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-5" value="Customer Owned DataCenter" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="320" y="270" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-6" value="" style="aspect=fixed;html=1;points=[];align=center;image;fontSize=12;image=img/lib/azure2/general/Management_Portal.svg;" vertex="1" parent="1">
+          <mxGeometry x="210" y="80" width="87.5" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" target="TRVSji0SfKdkGA1JncBO-6">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="97.5" y="115" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-9" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.571;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="TRVSji0SfKdkGA1JncBO-6" target="TRVSji0SfKdkGA1JncBO-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="160" as="sourcePoint" />
+            <mxPoint x="450" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-10" value="&lt;font style=&quot;font-size: 10px&quot;&gt;Provisioning Cluster in Customer&#39;s own datacenter through Azure&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="50" y="210" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-11" value="Portal" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="180" y="150" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-15" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="70" y="260" as="sourcePoint" />
+            <mxPoint x="450" y="500" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="450" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-17" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="TRVSji0SfKdkGA1JncBO-30" target="TRVSji0SfKdkGA1JncBO-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="380" y="430" as="sourcePoint" />
+            <mxPoint x="450" y="190" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-22" value="User" style="html=1;strokeColor=none;fillColor=#0079D6;labelPosition=center;verticalLabelPosition=middle;verticalAlign=top;align=center;fontSize=12;outlineConnect=0;spacingTop=-6;fontColor=#FFFFFF;sketch=0;shape=mxgraph.sitemap.user;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-23" value="User" style="html=1;strokeColor=none;fillColor=#0079D6;labelPosition=center;verticalLabelPosition=middle;verticalAlign=top;align=center;fontSize=12;outlineConnect=0;spacingTop=-6;fontColor=#FFFFFF;sketch=0;shape=mxgraph.sitemap.user;" vertex="1" parent="1">
+          <mxGeometry x="630" y="150" width="120" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-26" value="Customers get line of sight to the clusters from anywhere in the world using proxy" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="260" width="220" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-30" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.infographic.cylinder;fillColor=#10739E;strokeColor=none;rotation=60;" vertex="1" parent="1">
+          <mxGeometry x="425" y="345" width="40" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-35" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="450" y="260" as="sourcePoint" />
+            <mxPoint x="450" y="40" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-38" value="Azure" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="395" y="230" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-39" value="Arc Data Plane Services" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="100" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-40" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="TRVSji0SfKdkGA1JncBO-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="240" as="sourcePoint" />
+            <mxPoint x="370" y="160" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="320" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-48" value="Onboarding to Azure" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" vertex="1" connectable="0" parent="TRVSji0SfKdkGA1JncBO-40">
+          <mxGeometry x="0.515" y="-6" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TRVSji0SfKdkGA1JncBO-50" value="" style="shape=flexArrow;endArrow=classic;html=1;rounded=0;fontSize=10;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.005;exitY=0.995;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="TRVSji0SfKdkGA1JncBO-23" target="TRVSji0SfKdkGA1JncBO-30">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="220" as="sourcePoint" />
+            <mxPoint x="480" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
